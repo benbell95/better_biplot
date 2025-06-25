@@ -1,4 +1,4 @@
-##########################################################################
+########################################
 ### Ben's Better Biplot
 ### Plot function for creating better looking biplots in R (using base R)
 ### Copyright 2025, Benjamin Bell.
@@ -16,10 +16,9 @@
 ### Should play nicely with layout(), and other plot functions, e.g. adding additional elements after plotting, changing par() etc.
 
 ### See README.md file for usage. Arguments listed below. Full guide also available on my blog (coming soon).
+### Can also use .bb_info() to bring up help in the R console.
 
-# To do: 
-# Check Wills email, add the additional functions he requested
-
+########################################
 ### Arguments / details
 
 # x             = The pca (prcomp/princomp) object. You must run prcomp() or princomp() on your data before using this function.
@@ -84,7 +83,7 @@
 bb_biplot <- function(x, pc1=1, pc2=2, scale=1, pc.biplot=FALSE, limx, grid=TRUE, col, pch=21, cex.pt=1, xlab, ylab, axes=TRUE, group, group2, group3, labd, colld="black", cex.labd=0.5, font.labd=1, vectors=TRUE, whichv, expand=1, arrow.len=0.15, lwdv=2, colv="red", colvt="black", cex.labv=1, font.labv=1, axes.v=TRUE, lab_rotation=FALSE, ran_adj=FALSE, valign=0.5, chull=FALSE, ellipse=FALSE, angle="lm", autolim=TRUE, nofill=FALSE, lwde=2, se=0.7, legend=FALSE, title.leg, cex.leg=0.75, horiz=FALSE, lpx, lpy, ...) {
     ########################################
     ### Scale data
-    # Code modified from R base biplot() function code [Copyright (C) 1995-2012 The R Core Team]
+    # Scaling code modified from R base biplot() function code [Copyright (C) 1995-2012 The R Core Team]
     xclass <- class(x)
     # prcomp() scaling
     if(xclass=="prcomp") {
@@ -393,6 +392,7 @@ bb_biplot <- function(x, pc1=1, pc2=2, scale=1, pc.biplot=FALSE, limx, grid=TRUE
 
 ### Ellipse function
 # x should be 2 column df with x/y
+# angle = how to calculate ellipse angle, either "lm" or "atan"
 # se = scale factor for ellipse
 .bb_ellipse <- function(x, angle, se) {
     # Parametric representation
@@ -433,3 +433,14 @@ bb_biplot <- function(x, pc1=1, pc2=2, scale=1, pc.biplot=FALSE, limx, grid=TRUE
     # return data for plotting
     return(data.frame(x=xp, y=yp))
 }
+
+# Where to get help, use .bb_info() in console
+.bb_info <- function() {
+    message("Ben's better biplot function for creating biplots using base R.\nPerform pca using prcomp() or princomp(), then use bb_biplot() e.g.\n> p <- prcomp(iris[-5])\n> bb_biplot(p, group=iris[,5])")
+    message("")
+    message("Github - for readme file and argument list:\nhttps://github.com/benbell95/better_biplot")
+    message("")
+    message("Blog - for full guide and examples:\nhttps://www.benjaminbell.co.uk")
+}
+# Display info when first loading the script
+.bb_info()

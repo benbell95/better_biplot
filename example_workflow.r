@@ -7,6 +7,8 @@ setwd("~/code/r/graphics/better_biplot")
 # Local copy
 source("~/code/r/graphics/better_biplot/r/better_biplot.r")
 
+
+
 ## Test with iris
 p <- prcomp(iris[-5])
 prin <- princomp(iris[-5])
@@ -20,8 +22,8 @@ bb_biplot(p, group=gr, pch=c(21:23), scale=0, lab_rotation=TRUE, cex.pt=1)
 bb_biplot(p, group=gr, scale=0, lab_rotation=TRUE, cex.pt=1)
 
 
-
-
+.bb_info()
+bb_biplot(p, group=iris[,5])
 
 
 
@@ -47,7 +49,7 @@ bb_biplot(p, group=gr, scale=1, lab_rotation=TRUE, ellipse=TRUE)
 
 
 
-bb_biplot(p, group=gr2, scale=0, lab_rotation=TRUE, ellipse=TRUE, limx=1.6)
+bb_biplot(p, group=gr, group2=gr2, group3=gr, scale=0, labd=1:200, legend=TRUE, ellipse=TRUE)
 
 
 

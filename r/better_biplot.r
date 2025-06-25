@@ -1,6 +1,6 @@
 ########################################
 ### Ben's Better Biplot
-### Plot function for creating better looking biplots in R (using base R)
+### Plot function for creating better looking biplots in R (using only base R)
 ### Copyright 2025, Benjamin Bell.
 ### Code and updates: https://github.com/benbell95/better_biplot
 ### Blog: https://www.benjaminbell.co.uk
@@ -27,6 +27,8 @@
 
 # scale         = Scale data between 0 and 1 for plotting. This works the same way as R base biplot() function.
 # pc.biplot     = Logical. Additional scaling of vectors. This works the same way as R base biplot() function.
+
+# varimax.rotate = Additionally apply varimax rotation. 
 
 # limx          = xlim and ylim are generated automatically, but you can increase or decrease using a multiplier value (e.g. 1.5)
 # grid          = Logical. Draw a grid through center x and y axes.
@@ -61,6 +63,7 @@
 # ran_adj     = Logical. Alter (adjustment) position of the labels for the data observations.
 # valign        = Alignment of labels for the vectors [accepted values = 0, 0.5, 1]
 
+# circle.eq     = Logical. Plot circle of equilibrium contribution. Only works when scale = 0. Takes colour from colv value.
 # chull         = Logical. Add convex hulls to the plot - group must be supplied for this to work.
 # ellipse       = Logical. Draw ellipses around the data observations based on the group. 
 # angle         = Method to determine ellipse angle, either "lm" or "atan".
@@ -80,15 +83,16 @@
 
 ########################################
 ### Ben's Better biplot function
-bb_biplot <- function(x, pc1=1, pc2=2, scale=1, pc.biplot=FALSE, limx, grid=TRUE, col, pch=21, cex.pt=1, xlab, ylab, axes=TRUE, group, group2, group3, labd, colld="black", cex.labd=0.5, font.labd=1, vectors=TRUE, whichv, expand=1, arrow.len=0.15, lwdv=2, colv="red", colvt="black", cex.labv=1, font.labv=1, axes.v=TRUE, lab_rotation=FALSE, ran_adj=FALSE, valign=0.5, chull=FALSE, ellipse=FALSE, angle="lm", autolim=TRUE, nofill=FALSE, lwde=2, se=0.7, legend=FALSE, title.leg, cex.leg=0.75, horiz=FALSE, lpx, lpy, ...) {
+bb_biplot <- function(x, pc1=1, pc2=2, scale=1, varimax.rotate=FALSE, pc.biplot=FALSE, limx, grid=TRUE, col, pch=21, cex.pt=1, xlab, ylab, axes=TRUE, group, group2, group3, labd, colld="black", cex.labd=0.5, font.labd=1, vectors=TRUE, whichv, expand=1, arrow.len=0.15, lwdv=2, colv="red", colvt="black", cex.labv=1, font.labv=1, axes.v=TRUE, lab_rotation=FALSE, ran_adj=FALSE, valign=0.5, circle.eq=FALSE, chull=FALSE, ellipse=FALSE, angle="lm", autolim=TRUE, nofill=FALSE, lwde=2, se=0.7, legend=FALSE, title.leg, cex.leg=0.75, horiz=FALSE, lpx, lpy, ...) {
     ########################################
     ### Scale data
-    # Scaling code modified from R base biplot() function code [Copyright (C) 1995-2012 The R Core Team]
+    # Scaling code modified from base R biplot() function [Copyright (C) 1995-2012 The R Core Team]
     xclass <- class(x)
     # prcomp() scaling
     if(xclass=="prcomp") {
         n <- nrow(x$x)
-        if(scale != 0) {lam <- (x$sdev[c(pc1, pc2)] * sqrt(n)) ^ scale} else {lam <- 1 }
+        lam <- x$sdev[c(pc1, pc2)] * sqrt(n)
+        if(scale != 0) {lam <- lam ^ scale} else {lam <- 1 }
         if(pc.biplot==TRUE) lam <- lam / sqrt(n)      
         sco <- t(t(x$x[, c(pc1, pc2)]) / lam)
         rot <- t(t(x$rotation[, c(pc1, pc2)]) * lam)
@@ -96,10 +100,15 @@ bb_biplot <- function(x, pc1=1, pc2=2, scale=1, pc.biplot=FALSE, limx, grid=TRUE
     # princomp() scaling
     if(xclass=="princomp") {
         n <- x$n.obs
-        if(scale != 0) {lam <- (x$sdev[c(pc1, pc2)] * sqrt(n)) ^ scale} else {lam <- 1 }
+        lam <- x$sdev[c(pc1, pc2)] * sqrt(n)
+        if(scale != 0) {lam <- lam ^ scale} else {lam <- 1 }
         if(pc.biplot==TRUE) lam <- lam / sqrt(n)      
         sco <- t(t(x$scores[, c(pc1, pc2)]) / lam)
         rot <- t(t(x$loadings[, c(pc1, pc2)]) * lam)
+    }
+    if(varimax.rotate==TRUE) {
+        rawl <- rot %*% diag(x$sdev[c(pc1, pc2)])
+        sco <- scale(sco) %*% varimax(rawl)$rotmat
     }
     # Proportion of variance
     pvar <- x$sdev ^ 2 / sum(x$sdev ^ 2)
@@ -154,6 +163,18 @@ bb_biplot <- function(x, pc1=1, pc2=2, scale=1, pc.biplot=FALSE, limx, grid=TRUE
             }
         }
     }
+    # Circle of equilibrium contribution
+    if(circle.eq==TRUE && scale==0) {
+    cr <- sqrt(2 / length(x$sdev)) * expand
+        # circle function
+        circle <- function(r) {
+            t <- seq(0, 2 * pi, 0.1)
+            xp <- 0 + r*cos(t)
+            yp <- 0 + r*sin(t)
+            return(data.frame(x=xp, y=yp))
+        }
+    ceq <- circle(r=cr)
+    } else if(circle.eq==TRUE && scale!=0) {message("Info: You can only add circle of equilibrium when scale = 0")}
     # Label rotation
     if(lab_rotation==TRUE) {
         lsrt <- .bb_lab_rotation(x=sco, valign=valign, ran_adj=ran_adj)
@@ -351,6 +372,10 @@ bb_biplot <- function(x, pc1=1, pc2=2, scale=1, pc.biplot=FALSE, limx, grid=TRUE
         if(axes.v==TRUE && axes!=FALSE) {
             axis(3, lwd=0, lwd.ticks=1)
             axis(4, lwd=0, lwd.ticks=1)
+        }
+        # Plot circle of equilibrium
+        if(circle.eq==TRUE && scale==0) {
+            polygon(x=ceq[,1], y=ceq[,2], border=colv, lwd=1)
         }
         # Draw arrows
         arrows(x0=0, x1=rot[,1]*expand, y0=0, y1=rot[,2]*expand, col=colv, length=arrow.len, lwd=lwdv, xpd=TRUE)

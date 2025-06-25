@@ -1,6 +1,6 @@
 # Ben's better biplot!
 
-better biplots!
+better biplots! (readme file in progress!)
 
 ## Getting the code
 

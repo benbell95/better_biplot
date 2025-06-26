@@ -200,11 +200,8 @@ Details for the available arguments are shown in the table below.
 | x | The pca (prcomp/princomp) object. You should run prcomp() or princomp() on your data before using this function. You can also plot any data in the form of a list of at least length 2, each containing a matrix of data. |
 | pc1 | The first principal component to plot (default = ). |
 | pc2 | The second principal component to plot (default = 2). |
-|  |  |
 | scale | Scale data between 0 and 1 for plotting (default = 1). This works the same way as R base biplot() function. || pc.biplot | Logical. Additional scaling of variables (default = FALSE). This works the same way as R base biplot() function. |
-|  |  |
 | varimax.rotate | Logical. Additionally apply varimax rotation (uses default settings, see ?varimax for help) (default = FALSE). |
-|  |  |
 | limx | xlim and ylim are generated automatically, but you can increase or decrease using a multiplier value (e.g. 1.5) |
 | grid | Logical. Draw a grid through center x and y axes (default = TRUE). |
 | col | Optional. Colours for the plot / groups. Automatically generates a palette if not supplied. |
@@ -213,16 +210,13 @@ Details for the available arguments are shown in the table below.
 | xlab | Overwrite the default x axis label. |
 | ylab | Overwrite the default y axis label. |
 | axes | Logical. Plot axes (his controls all axes including variables) (default = TRUE). |
-|  |  |
 | group | Optional. Groups for the data. Should be a factor, with length that matches original data. This affects the colour of the points and also allows for ellipses or convex hulls to be drawn. This will also affect the plot symbol used if multiple pch supplied, unless group2 is also specified where symbols will then relate to the second group. |
 | group2 | Optional. Second grouping of data. Should be a factor, with length that matches original data. This affects the pch symbol only (e.g. multiple symbols within a single grouping). group must also be specified. |
 | group3 | Optional. Third grouping of data. Should be a factor, with length that matches original data. This affects the size of the pch symbol (size automatically determined based on number of groups). group must also be specified (but does not need group2). |
-|  |  |
 | labd | Optional. A vector of labels for the data observations, this should be the same length as the data. Use NULL values to omit some labels. |
 | col.labd | Colour for the labels (default = "black"). |
 | cex.labd | Size of text labels.   |
 | font.labd | Font type for data labels (1 = normal, 2 = bold, 3 = italic, 4 = bold italic).   |
-|  |  |
 | variables | Logical. Whether to plot the variables or not (default = TRUE). |
 | whichv | Specify which variables to plot. Either character vector, where names should exactly match the variables, or integer values to match index position. If specified as "circle.eq", it will only plot variables extending beyond the circle of equilibrium contribution, overriding any other variables - must also specify circle.eq=TRUE and scale=0 to work. |
 | expand | Scale the variable arrows, if the arrows are too large or too small, change this value. Multiplier: values above 1 increase, while below 1 decrease the size. |
@@ -233,11 +227,9 @@ Details for the available arguments are shown in the table below.
 | cex.labv | Size of the text labels for the variables. |
 | font.labv | Font type for labels (1 = normal, 2 = bold, 3 = italic, 4 = bold italic). |
 | axes.v | Logical. Plot variable axes (default = TRUE).   |
-|  |  |
 | lab_rotation | Logical. Rotate labels for the data observations and variables (default = FALSE). Useful when you have lots of data points and labels. This may be slow if there are lots of labels to plot. |
 | ran_adj | Logical. Alter the adjustment position of the labels for the data observations. |
 | valign | Alignment of labels for the variables (accepted values = 0, 0.5, 1). |
-|  |  |
 | circle.eq | Logical. Plot circle of equilibrium contribution (default = FALSE). Only works when scale = 0. Takes colour from col.v value.|
 | chull | Logical. Add convex hulls to the plot - group must be supplied for this to work (default = FALSE). |
 | ellipse | Logical. Draw ellipses around the data observations based on the group (default = FALSE). |
@@ -246,12 +238,10 @@ Details for the available arguments are shown in the table below.
 | nofill | Logical. By default, ellipses and convex hulls have a background colour (default = FALSE). Change to TRUE to only show border outlines. |
 | lwd.e | Line width for the ellipses and/or convex hulls (default = 2). |
 | se  | Scale the size of the ellipses. Multiplier: values above 1 increase, while below 1 decrease the size (default = 0.7). |
-|  |  |
 | legend | Logical. Add a legend to plot. Only works when group is specified (default = FALSE). |
 | title.leg | Titles for legend groups, should be a string with length of 1, 2 or 3 (depending on number of groups specified). Default is "Group", "Group 2" and "Group 3". |
 | cex.leg | Size of legend (multiplier). |
 | horiz | Logical. Plot legends next to each other - only works when multiple groups used (default = FALSE). Need to additionally specify lpx value to show properly (i.e. move legend position). Can also specify lpy for further control. |
 | lpx | Optional. Absolute position of legend on x axis (data observations). |
 | lpy | Optional. Absolute position of legend on y axis (data observations). |
-|  |  |
 | ... Additional arguments passed to plot() (main plot only). |

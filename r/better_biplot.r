@@ -327,7 +327,16 @@ bb_biplot <- function(x, pc1=1, pc2=2, scale=1, varimax.rotate=FALSE, pc.biplot=
         if(!hasArg(lpx)) {lpx <- max(lim)*1.37}
         if(!hasArg(lpy)) {lpy <- ifelse(grc > 1, max(lim), 0)}              
         # Group 1
-        lp <- legend(x=lpx, y=lpy, yjust=1, xjust=0, legend=paste(levels(group)), bty="n", col="black", pt.bg=c, pch=22, pt.cex=cex.leg*2, xpd=NA, cex=cex.leg, text.width=1, title=title.leg[1], title.font=2, title.adj=0)
+        # Colours/pch if only 1 group
+        if(grc==1) {
+            g1p <- pch
+            g1c <- c
+            g1c[which(g1p %in% 21:25)] <- "black"
+        } else {
+            g1p <- 22
+            g1c <- "black"
+        }
+        lp <- legend(x=lpx, y=lpy, yjust=1, xjust=0, legend=paste(levels(group)), bty="n", col=g1c, pt.bg=c, pch=g1p, pt.cex=cex.leg*2, xpd=NA, cex=cex.leg, text.width=1, title=title.leg[1], title.font=2, title.adj=0)
         # Position
         lp1 <- abs(lp$text$y[1] - lp$text$y[2])  
         # Group 2

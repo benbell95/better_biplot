@@ -189,7 +189,7 @@ For example, use `text()` to add text annotations. Note that the coordinates to 
 
 More information and detailed examples on how to use this function are available on my blog (coming soon!): [benjaminbell.co.uk](https://www.benjaminbell.co.uk).
 
-You can also call help after loading the script using `bb_help()` in the R console, and/or `bb_help(arg=TRUE)` to see a list of arguments and their default values (or see list below).
+You can also call help after loading the script using `bb_info()` in the R console, and/or `bb_info(arg=TRUE)` to see a list of arguments and their default values (or see list below).
 
 ## Arguments
 

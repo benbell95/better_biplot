@@ -58,7 +58,7 @@ A comparison between the arguments is shown in the table below, and a comparison
 | xlim, ylim | limx | Plot limits for the x and y axes are generated automatically, but can be increased or decreased. |
 | ... | ... | Additional arguments passed to the main plot. |
 
-See [arguments section](#Arguments) for a full list of available functions and an explanation of what they do / how they work.
+See [arguments section](#Arguments) for a full list of available arguments and an explanation of what they do / how they work.
 
 You can also plot other data which was not created by `prcomp()` or `princomp()`, this should be supplied as a list object, with the first item containing a matrix of at least two columns for the data (e.g. "scores"). The second list item should also contain a matrix of the variables (e.g. the rotation or loadings). A third list item can also be supplied (but this is optional), and this should contain the sd values. This data will not be scaled by `bb_biplot()` regardless of the scale setting, and should be scaled before plotting.
 

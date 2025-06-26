@@ -183,7 +183,7 @@ You may need to resize the plot window and/or re-run the code to show this corre
 
 You can customise pretty much every aspect of the plot, beyond what is mentioned in this readme file. Refer to further examples or the arguments section below for full details. You can also add other plot elements to the biplot using the various plot functions available in R. 
 
-For example, use `text()` to add text annotations. Note that the coordinates to use relate to the variable plot (if plotted) i.e. bottom and left sides, or the main plot (if variables are not plotted) i.e. top and right sides. You can easily find out what coordinates to use by typing `par("usr")` into the R console.
+For example, use `text()` to add text annotations. Note that the coordinates to use relate to the variable plot (if plotted) i.e. top and right sides, or the main plot (if variables are not plotted) i.e. bottom and left sides. You can easily find out what coordinates to use by typing `par("usr")` into the R console.
 
 ## Further examples and help
 

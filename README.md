@@ -191,7 +191,7 @@ More information and detailed examples on how to use this function are available
 
 You can also call help after loading the script using `bb_help()` in the R console, and/or `bb_help(arg=TRUE)` to see a list of arguments and their default values (or see list below).
 
-## Argument list
+## Arguments
 
 Details for the available arguments are shown in the table below.
 

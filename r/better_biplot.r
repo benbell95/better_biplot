@@ -25,15 +25,15 @@
 # pc1           = The first principal component to plot [default = 1].
 # pc2           = The second principal component to plot [default = 2].
 
-# scale         = Scale data between 0 and 1 for plotting. This works the same way as R base biplot() function.
-# pc.biplot     = Logical. Additional scaling of variables. This works the same way as R base biplot() function.
+# scale         = Scale data between 0 and 1 for plotting [default = 1]. This works the same way as R base biplot() function.
+# pc.biplot     = Logical. Additional scaling of variables [default = FALSE]. This works the same way as R base biplot() function.
 
-# varimax.rotate = Additionally apply varimax rotation (uses default settings, see ?varimax for help). 
+# varimax.rotate = Logical. Additionally apply varimax rotation (uses default settings, see ?varimax for help) [default = FALSE]. 
 
 # limx          = xlim and ylim are generated automatically, but you can increase or decrease using a multiplier value (e.g. 1.5)
-# grid          = Logical. Draw a grid through center x and y axes.
+# grid          = Logical. Draw a grid through center x and y axes [default = TRUE].
 # col           = Optional. Colours for the plot / groups. Automatically generates a palette if not supplied. 
-# pch           = Optional. Plotting symbols to use for the observations (also see group 2)
+# pch           = Optional. Plotting symbols to use for the observations (also see group 2) [default symbol = 21].
 # cex.pt        = Changes the size of the plotting symbols.
 # xlab          = Overwrite the default x axis label.
 # ylab          = Overwrite the default y axis label.  
@@ -44,7 +44,7 @@
 # group3        = Optional. Third grouping of data. Should be a factor, with length that matches original data. This affects the size of the pch symbol (size automatically determined based on number of groups). group must also be specified (but does not need group2).
 
 # labd          = Optional. A vector of labels for the data observations, this should be the same length as the data. Use NULL values to omit some labels.
-# col.labd      = Colour for the labels [default = black].
+# col.labd      = Colour for the labels [default = "black"].
 # cex.labd      = Size of text labels.
 # font.labd     = Font type for data labels [1 = normal, 2 = bold, 3 = italic, 4 = bold italic].
 
@@ -53,31 +53,31 @@
 # expand        = Scale the variable arrows, if the arrows are too large or too small, change this value. Multiplier: values above 1 increase, while below 1 decrease the size.
 # arrow.len     = Length of arrow head. Use 0 to suppress.
 # lwd.v         = Line width for arrows [default = 2].
-# col.v         = Colour of the arrows.
-# col.labv      = Colour of the arrow labels.
+# col.v         = Colour of the arrows [default = "red"].
+# col.labv      = Colour of the arrow labels [default = "black"].
 # cex.labv      = Size of the text labels for the variables.
 # font.labv     = Font type for labels [1 = normal, 2 = bold, 3 = italic, 4 = bold italic].
 # axes.v        = Logical. Plot variable axes [default = TRUE].
 
-# lab_rotation  = Logical. Rotate labels for the data observations and variables. Useful when you have lots of data points and labels. This may be slow if there are lots of labels to plot.
+# lab_rotation  = Logical. Rotate labels for the data observations and variables [default = FALSE]. Useful when you have lots of data points and labels. This may be slow if there are lots of labels to plot.
 # ran_adj       = Logical. Alter the adjustment position of the labels for the data observations.
 # valign        = Alignment of labels for the variables [accepted values = 0, 0.5, 1]
 
-# circle.eq     = Logical. Plot circle of equilibrium contribution. Only works when scale = 0. Takes colour from col.v value.
-# chull         = Logical. Add convex hulls to the plot - group must be supplied for this to work.
-# ellipse       = Logical. Draw ellipses around the data observations based on the group. 
-# angle         = Method to determine ellipse angle, either "lm" or "atan".
-# autolim       = Logical. Try to increase plot limits with large ellipses. Can also use limx to specify value.
-# nofill        = Logical. By default, ellipses and convex hulls have a background colour. Change to false to only show outline.
+# circle.eq     = Logical. Plot circle of equilibrium contribution [default = FALSE]. Only works when scale = 0. Takes colour from col.v value.
+# chull         = Logical. Add convex hulls to the plot - group must be supplied for this to work [default = FALSE].
+# ellipse       = Logical. Draw ellipses around the data observations based on the group [default = FALSE]. 
+# angle         = Method to determine ellipse angle, either "lm" or "atan" [default = "lm"].
+# autolim       = Logical. Try to increase plot limits with large ellipses. Can also use limx to specify value [default = TRUE].
+# nofill        = Logical. By default, ellipses and convex hulls have a background colour [default = FALSE]. Change to TRUE to only show border outlines.
 # lwd.e         = Line width for the ellipses and/or convex hulls [default = 2].
-# se            = Scale the size of the ellipses. Multiplier: values above 1 increase, while below 1 decrease the size.
+# se            = Scale the size of the ellipses. Multiplier: values above 1 increase, while below 1 decrease the size [default = 0.7].
 
-# legend        = Logical. Add a legend to plot. Only works when group is specified.
+# legend        = Logical. Add a legend to plot. Only works when group is specified [default = FALSE].
 # title.leg     = Titles for legend groups, should be a string with length of 1, 2 or 3 (depending on number of groups specified). Default is "Group", "Group 2" and "Group 3".
 # cex.leg       = Size of legend (multiplier).
-# horiz         = Logical. Plot legends next to each other. Applies when multiple groups uses. Need to specify lpx value to show properly (i.e. move legend position). Can also specify lpy for further control.
-# lpx           = Optional. Absolute position of legend on x axis.
-# lpy           = Optional. Absolute position of legend on y axis.
+# horiz         = Logical. Plot legends next to each other - only works when multiple groups used [default = FALSE]. Need to additionally specify lpx value to show properly (i.e. move legend position). Can also specify lpy for further control.
+# lpx           = Optional. Absolute position of legend on x axis (data observations).
+# lpy           = Optional. Absolute position of legend on y axis (data observations).
 
 # ...           = Additional arguments passed to plot() [main plot only].
 

@@ -244,4 +244,4 @@ Details for the available arguments are shown in the table below.
 | horiz | Logical. Plot legends next to each other - only works when multiple groups used (default = FALSE). Need to additionally specify lpx value to show properly (i.e. move legend position). Can also specify lpy for further control. |
 | lpx | Optional. Absolute position of legend on x axis (data observations). |
 | lpy | Optional. Absolute position of legend on y axis (data observations). |
-| ... Additional arguments passed to plot() (main plot only). |
+| ... | Additional arguments passed to plot() (main plot only). |

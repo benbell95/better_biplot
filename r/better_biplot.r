@@ -49,7 +49,7 @@
 # font.labd     = Font type for data labels [1 = normal, 2 = bold, 3 = italic, 4 = bold italic].
 
 # variables     = Logical. Whether to plot the variables or not.
-# whichv        = By default, all variables are plotted, but you can instead specify which to plot. This can be a character vector, where names should exactly match the names of the variables you want to plot, or a numeric vector to match index position.
+# whichv        = Specify which variables to plot. Either character vector, where names should exactly match the variables, or integer values to match index position. If specified as "circle.eq", it will only plot variables extending beyond the circle of equilibrium contribution, overriding any other variables - must also specify circle.eq=TRUE and scale=0 to work.
 # expand        = Scale the variable arrows, if the arrows are too large or too small, change this value. Multiplier: values above 1 increase, while below 1 decrease the size.
 # arrow.len     = Length of arrow head. Use 0 to suppress.
 # lwd.v         = Line width for arrows [default = 2].
@@ -360,13 +360,19 @@ bb_biplot <- function(x, pc1=1, pc2=2, scale=1, varimax.rotate=FALSE, pc.biplot=
         if(hasArg(whichv)) {
             # Get variable names
             vname <- rownames(x$rotation)
-            # Match and subset
             if(class(whichv)=="character") {
+                if("circle.eq" %in% whichv) {
+                    # Plot variables outide circle only
+                    if(circle.eq==TRUE && scale==0) {match <- which(abs(rot[,2]) > cr)}
+                } else {
+                # Plot variables matching character names
                 match <- which(vname %in% whichv)
-            } else {match <- whichv}
+                # Not all names match message
+                if(length(match)>0 & length(match)!=length(whichv)) message("Info: Some variables do not match variable names")
+                }
+            } else {match <- whichv} # Plot variables matching index position
             # Check if any matches
             if(length(match)==0) stop("Error! Supplied variables do not match any variable names")
-            if(length(match)>0 & length(match)!=length(whichv)) message("Info: Some variables do not match variable names")
             # Subset
             rot <- rot[match,]
             # If only 1 match, object is converted to numeric, so convert back (otherwise breaks rest of function)

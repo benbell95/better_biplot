@@ -2,6 +2,18 @@
 
 A script to create beautiful looking biplots using base R, without the need to use or install any additional packages. Designed to work with `prcomp()` and `princomp()` output for principal component analysis (pca), but can also work with other data. The function is compatible with the base `biplot()` function, but offers significant enhancements including new features and full customisation of the biplot.
 
+## Features
+
+* Quickly create beautiful biplots from pca analysis.
+* Uses base R - no need to install other packages.
+* Compatible* with base biplot() function.
+* Full customisation of the plot.
+* Style the plot points based on grouping data.
+* Add legends (automatically generated).
+* Add ellipses or convex hulls to grouped data.
+* Add circle of equilibrium contribution.
+* Plays nicely with layout(), mfrow(), par() and other plot functions.
+
 ## Get the code
 
 You can load the code directly into R from Github using the following:
@@ -25,18 +37,6 @@ bb_biplot(p, scale=0, group=gr, lab_rotation=TRUE, circle.eq=TRUE, legend=TRUE, 
 ```
 
 ![bb_biplot](https://github.com/user-attachments/assets/53c0e0d3-856b-4b85-9ef7-3db8f6b549e5)
-
-## Features
-
-* Quickly create beautiful biplots from pca analysis.
-* Uses base R - no need to install other packages.
-* Compatible* with base biplot() function.
-* Full customisation of the plot.
-* Style the plot points based on grouping data.
-* Add legends (automatically generated).
-* Add ellipses or convex hulls to grouped data.
-* Add circle of equilibrium contribution.
-* Plays nicely with layout(), mfrow(), par() and other plot functions.
 
 ## Compatibility
 

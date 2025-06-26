@@ -90,9 +90,9 @@ bb_biplot(p, scale=0, group=gr, whichv="circle.eq", circle.eq=TRUE)
 
 ## Grouping data 
 
-`bb_biplot()` allows you to use up to three groups to style the plot points, with the arguments `group`, `group2`, and `group3`. These are optional, and you can style the plot without using groups, but using groups makes styling easier and automated, and also allows legends to be plotted. 
+`bb_biplot()` allows you to use up to three groups to style the plot points, with the arguments `group`, `group2`, and `group3`. These are optional, and you can style the plot without using groups, but using groups makes styling easier and automated. 
 
-Grouping data allows [ellipses and/or convex hulls](#Ellipses-and-Convex-hulls) to be plotted, and also allows plot [legends](#Legends) to be added.
+Grouping data also allows [ellipses and/or convex hulls](#Ellipses-and-Convex-hulls) to be plotted, as well as allowing plot [legends](#Legends) to be added.
 
 Group objects should be a factor, with a length that matches the number of data observations. For example, in the `iris` dataset, the fifth column "Species" is a grouping of the data, and this can be converted to a factor. `gr <- as.factor(iris[,5])`. If an object is supplied that is not a factor, the function will attempt to convert it.
 
@@ -150,7 +150,7 @@ To add ellipses, use:
 bb_biplot(p, scale=0, group=gr, ellipse=TRUE)
 ```
 
-The colour is based on the group, but you can customise the outer line width, and/or whether it uses a fill (background) colour, see [arguments section](#Arguments) for details. Ellipses are automatically generated using the [parametric representation formula](https://en.wikipedia.org/wiki/Ellipse#Parametric_representation), and this is not always perfect. You can change how the angles are calculated by changing the `angle` argument to `angle="atan"` which can sometimes improve the ellipse. You can also scale the ellipse using the `se` argument with is a multiplier.
+The colour is based on the group, but you can customise the outer line width, and/or whether it uses a fill (background) colour, see [arguments section](#Arguments) for details. Ellipses are automatically generated using the [parametric representation formula](https://en.wikipedia.org/wiki/Ellipse#Parametric_representation), and this is not always perfect. You can change how the angles are calculated by changing the `angle` argument to `angle="atan"` from `angle="lm"` which can sometimes improve the ellipse. You can also scale the ellipse using the `se` argument with is a multiplier.
 
 ## Legends
 
@@ -167,7 +167,7 @@ bb_biplot(p, scale=0, group=gr, group2=gr2, group3=gr3, legend=TRUE, title.leg=c
 
 By default, the legends are placed in the right side margin. If there is only 1 group, the legend is vertically centred, but if more than 1 group, the legends are placed at the top of the y axis. 
 
-You can change the location of the legend(s) by using the `lpx` and/or `lpy` arguments, to specify the absolute position using the main plot coordinates (even when variables are plotted). For example, to move the legends inside the plot area. You can also place the legend in the margins by extrapolating the likely coordinates, however, if using the bottom, left, or top margin, you must also change the plot margins using `par(mar=c())` function before calling `bb_biplot()`. When using the right margin, this should happen automatically. You can also horizontally align the different legends, rather than vertically align using `horiz=TRUE`. This only works with multiple groups. Examples:
+You can change the location of the legend(s) by using the `lpx` and/or `lpy` arguments, to specify the absolute position using the main plot coordinates (even when variables are plotted), for example, to move the legends inside the plot area. You can also place the legend in the margins by extrapolating the likely coordinates, however, if using the bottom, left, or top margin, you must also change the plot margins using `par(mar=c())` function before calling `bb_biplot()`. When using the right margin, this should happen automatically. You can also horizontally align the different legends, rather than vertically align using `horiz=TRUE`. This only works with multiple groups. Examples:
 
 ```
 # Legend inside plot (top left)

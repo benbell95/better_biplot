@@ -8,7 +8,7 @@ A script to create beautiful looking biplots using base R, without the need to u
 * Uses base R - no need to install other packages.
 * Compatible* with base biplot() function.
 * Full customisation of the plot.
-* Style the plot points based on grouping data.
+* Style the plot points based on groups (up to three), or style manually.
 * Add legends (automatically generated).
 * Add ellipses or convex hulls to grouped data.
 * Add circle of equilibrium contribution.
@@ -193,7 +193,8 @@ You can also call help after loading the script using `bb_info()` in the R conso
 
 ## Arguments
 
-Details for the available arguments are shown in the table below.
+Details for the available arguments are shown in the table below. The list of arguments is long, but the function uses sensible defaults, and does a lot of styling automatically, so you should not need to change many of these, but they are there if needed, and offer lots of customisation options if thats what you want.
+
 
 | Argument | Details |
 | -------------- | ------------------ |

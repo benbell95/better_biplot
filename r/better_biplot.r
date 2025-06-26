@@ -112,6 +112,7 @@ bb_biplot <- function(x, pc1=1, pc2=2, scale=1, varimax.rotate=FALSE, pc.biplot=
     }
     # Proportion of variance
     pvar <- x$sdev ^ 2 / sum(x$sdev ^ 2)
+
     ########################################
     ### Plot data / config
     # Get x/ylim values
@@ -459,13 +460,25 @@ bb_biplot <- function(x, pc1=1, pc2=2, scale=1, varimax.rotate=FALSE, pc.biplot=
     return(data.frame(x=xp, y=yp))
 }
 
-# Where to get help, use .bb_info() in console
-.bb_info <- function() {
-    message("Ben's better biplot function for creating biplots using base R.\nPerform pca using prcomp() or princomp(), then use bb_biplot() e.g.\n> p <- prcomp(iris[-5])\n> bb_biplot(p, group=iris[,5])")
-    message("")
-    message("Github - for readme file and argument list:\nhttps://github.com/benbell95/better_biplot")
-    message("")
-    message("Blog - for full guide and examples:\nhttps://www.benjaminbell.co.uk")
+# Where to get help, use bb_info() in console
+bb_info <- function(arg=FALSE) {
+    if(arg!=TRUE) {message("")
+        message("Ben's better biplot function for creating biplots using base R.\nPerform pca using prcomp() or princomp(), then use bb_biplot() e.g.\n\n> p <- prcomp(iris[-5])\n> bb_biplot(p, group=iris[,5])")
+        message("")
+        message("Github - for readme file:\nhttps://github.com/benbell95/better_biplot")
+        message("")
+        message("Blog - for full guide and examples:\nhttps://www.benjaminbell.co.uk")
+        # Show function arguments
+        message("")
+        message("Type bb_info(arg=TRUE) to see list of arguments.")
+    }
+    if(arg==TRUE) {
+        message("Ben's better biplot arguments and default values.\nRefer to online readme or guide for how to use them.\n")
+        ar <- args(bb_biplot) |> as.list()
+        ar <- ar[-length(ar)]
+        ar <- data.frame(argument=names(ar), default.value=as.character(ar))
+        print(ar)
+    }
 }
 # Display info when first loading the script
-.bb_info()
+message("Ben's better biplot. Type bb_info() in the R console for help and info.")

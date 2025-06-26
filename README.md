@@ -62,9 +62,9 @@ See [arguments section](#Arguments) for a full list of available functions and a
 
 You can also plot other data which was not created by `prcomp()` or `princomp()`, this should be supplied as a list object, with the first item containing a matrix of at least two columns for the data (e.g. "scores"). The second list item should also contain a matrix of the variables (e.g. the rotation or loadings). A third list item can also be supplied (but this is optional), and this should contain the sd values. This data will not be scaled by `bb_biplot()` regardless of the scale setting, and should be scaled before plotting.
 
-If you use 'vegan' for pca analysis and biplots, note that the scale value is reversed, e.g. scale = 0 in vegan equates to scale = 1 in base R and `bb_biplot()`, see table below.
+If you use `vegan` for pca analysis and biplots, note that the scale value is reversed, e.g. scale = 0 in vegan equates to scale = 1 in base R and `bb_biplot()`, see table below.
 
-| biplot() | bb_biplot() | 'vegan' biplot.rda() |
+| biplot() | bb_biplot() | vegan biplot.rda() |
 | --- | --- | --- |
 | scale = 0 | scale = 0 | scale = 1 |
 | scale = 1 | scale = 1 | scale = 0 |
@@ -75,7 +75,7 @@ Additionally, you can apply a further rotation to the main data observations usi
 
 ## To biplot (or not to biplot?)
 
-By default, the reduced dataset principal components (e.g. the data observations) are plotted, with the variables (loadings) plotted on top for comparison, hence the term "biplot". But, you can disable the second plot of variables using `variables=FALSE`. This can be useful if you have lots of variables, and you don't want the plot covered in variable arrows and/or labels!
+By default, the reduced dataset principal components (e.g. the data observations) are plotted, with the variables (loadings) plotted on top for comparison, hence the term "biplot". But, you can disable the second plot of variables using `variables=FALSE`. This can be useful if you have lots of variables, and you do not want the plot covered in variable arrows and/or labels!
 
 You can also control which variables are plotted using the `whichv` argument, where you can specify either the name (exact match) of the variable, or the index position. Additionally, if plotting the circle of equilibrium, you can specify that only variable arrows which extend beyond the circle are plotted. Examples:
 
@@ -94,9 +94,9 @@ bb_biplot(p, scale=0, group=gr, whichv="circle.eq", circle.eq=TRUE)
 
 Grouping data allows [ellipses and/or convex hulls](#Ellipses-and-Convex-hulls) to be plotted, and also allows plot [legends](#Legends) to be added.
 
-Group objects should be a factor, with a length that matches the number of data observations. For example, in the `iris` dataset, the fifth column 'Species' is a grouping of the data, and this can be converted to a factor. `gr <- as.factor(iris[,5])`. If an object is supplied that is not a factor, the function will attempt to convert it.
+Group objects should be a factor, with a length that matches the number of data observations. For example, in the `iris` dataset, the fifth column "Species" is a grouping of the data, and this can be converted to a factor. `gr <- as.factor(iris[,5])`. If an object is supplied that is not a factor, the function will attempt to convert it.
 
-`group` controls the colour of the plot points. However, it can also control the plot symbols if these are additionally specified, and 'group2' is not used. Example:
+`group` controls the colour of the plot points. However, it can also control the plot symbols if these are additionally specified, and `group2` is not used. Example:
 
 ```
 # Group 
@@ -108,7 +108,7 @@ bb_biplot(p, scale=0, group=gr, pch=c(21, 22, 23))
 
 Colours are generated automatically, or you can specify them using the `col` argument.
 
-`group2` controls the plot symbol (pch) for the plot points within each group, as specified by `group` and this must also be specified for 'group2` to work. Example:
+`group2` controls the plot symbol (pch) for the plot points within each group, as specified by `group` and this must also be specified for `group2` to work. Example:
 
 ```
 # Fake group for use in example

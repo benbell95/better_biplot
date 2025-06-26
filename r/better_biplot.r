@@ -21,14 +21,14 @@
 ########################################
 ### Arguments / details
 
-# x             = The pca (prcomp/princomp) object. You must run prcomp() or princomp() on your data before using this function.
+# x             = The pca (prcomp/princomp) object. You should run prcomp() or princomp() on your data before using this function. You can also plot any data in the form of a list of at least length 2, each containing a matrix of data.
 # pc1           = The first principal component to plot [default = 1].
 # pc2           = The second principal component to plot [default = 2].
 
 # scale         = Scale data between 0 and 1 for plotting. This works the same way as R base biplot() function.
-# pc.biplot     = Logical. Additional scaling of vectors. This works the same way as R base biplot() function.
+# pc.biplot     = Logical. Additional scaling of variables. This works the same way as R base biplot() function.
 
-# varimax.rotate = Additionally apply varimax rotation. 
+# varimax.rotate = Additionally apply varimax rotation (uses default settings, see ?varimax for help). 
 
 # limx          = xlim and ylim are generated automatically, but you can increase or decrease using a multiplier value (e.g. 1.5)
 # grid          = Logical. Draw a grid through center x and y axes.
@@ -37,39 +37,39 @@
 # cex.pt        = Changes the size of the plotting symbols.
 # xlab          = Overwrite the default x axis label.
 # ylab          = Overwrite the default y axis label.  
-# axes          = Logical. Plot axes (his controls all axes including vectors) [default = TRUE].
+# axes          = Logical. Plot axes (his controls all axes including variables) [default = TRUE].
 
-# group         = Optional. Groups for the data. Should be a factor, with length that matches original data. This affects the colour of the points and also allows for ellipses or convex hulls to be drawn. This will also affect the plot symbol used if multiple pch supplied, unless group2 is also specified.
+# group         = Optional. Groups for the data. Should be a factor, with length that matches original data. This affects the colour of the points and also allows for ellipses or convex hulls to be drawn. This will also affect the plot symbol used if multiple pch supplied, unless group2 is also specified where symbols will then relate to the second group.
 # group2        = Optional. Second grouping of data. Should be a factor, with length that matches original data. This affects the pch symbol only (e.g. multiple symbols within a single grouping). group must also be specified.
-# group3        = Optional. Third grouping of data. Should be a factor, with length that matches original data. This affects the size of the pch symbol. group must also be specified (but does not need group2).
+# group3        = Optional. Third grouping of data. Should be a factor, with length that matches original data. This affects the size of the pch symbol (size automatically determined based on number of groups). group must also be specified (but does not need group2).
 
 # labd          = Optional. A vector of labels for the data observations, this should be the same length as the data. Use NULL values to omit some labels.
-# colld         = Colour for the labels [default = black].
+# col.labd      = Colour for the labels [default = black].
 # cex.labd      = Size of text labels.
 # font.labd     = Font type for data labels [1 = normal, 2 = bold, 3 = italic, 4 = bold italic].
 
-# vectors       = Logical. Whether to plot the vectors or not.
-# whichv        = By default, all vectors are plotted, but you can instead specify which to plot. This can be a character vector, where names should exactly match the names of the vectors you want to plot, or a numeric vector to match index position.
-# expand        = Scale the vectors, if the vectors are too large or too small, change this value. Multiplier: values above 1 increase, while below 1 decrease the size.
+# variables     = Logical. Whether to plot the variables or not.
+# whichv        = By default, all variables are plotted, but you can instead specify which to plot. This can be a character vector, where names should exactly match the names of the variables you want to plot, or a numeric vector to match index position.
+# expand        = Scale the variable arrows, if the arrows are too large or too small, change this value. Multiplier: values above 1 increase, while below 1 decrease the size.
 # arrow.len     = Length of arrow head. Use 0 to suppress.
-# lwdv          = Line width for vector arrows [default = 2].
-# colv          = Colour of the vector arrows.
-# colvt         = Colour of the vector arrow labels.
-# cex.labv      = Size of the text labels for the vectors.
-# font.labv     = Font type for vector labels [1 = normal, 2 = bold, 3 = italic, 4 = bold italic].
-# axes.v       = Logical. Plot vector axes [default = TRUE].
+# lwd.v         = Line width for arrows [default = 2].
+# col.v         = Colour of the arrows.
+# col.labv      = Colour of the arrow labels.
+# cex.labv      = Size of the text labels for the variables.
+# font.labv     = Font type for labels [1 = normal, 2 = bold, 3 = italic, 4 = bold italic].
+# axes.v        = Logical. Plot variable axes [default = TRUE].
 
-# lab_rotation  = Logical. Rotate labels for the data observations and vectors. Useful when you have lots of data points and labels. This may be slow if there are lots of labels to plot.
-# ran_adj     = Logical. Alter (adjustment) position of the labels for the data observations.
-# valign        = Alignment of labels for the vectors [accepted values = 0, 0.5, 1]
+# lab_rotation  = Logical. Rotate labels for the data observations and variables. Useful when you have lots of data points and labels. This may be slow if there are lots of labels to plot.
+# ran_adj       = Logical. Alter the adjustment position of the labels for the data observations.
+# valign        = Alignment of labels for the variables [accepted values = 0, 0.5, 1]
 
-# circle.eq     = Logical. Plot circle of equilibrium contribution. Only works when scale = 0. Takes colour from colv value.
+# circle.eq     = Logical. Plot circle of equilibrium contribution. Only works when scale = 0. Takes colour from col.v value.
 # chull         = Logical. Add convex hulls to the plot - group must be supplied for this to work.
 # ellipse       = Logical. Draw ellipses around the data observations based on the group. 
 # angle         = Method to determine ellipse angle, either "lm" or "atan".
 # autolim       = Logical. Try to increase plot limits with large ellipses. Can also use limx to specify value.
 # nofill        = Logical. By default, ellipses and convex hulls have a background colour. Change to false to only show outline.
-# lwde          = Line width for the ellipses and/or convex hulls [default = 2].
+# lwd.e         = Line width for the ellipses and/or convex hulls [default = 2].
 # se            = Scale the size of the ellipses. Multiplier: values above 1 increase, while below 1 decrease the size.
 
 # legend        = Logical. Add a legend to plot. Only works when group is specified.
@@ -83,36 +83,45 @@
 
 ########################################
 ### Ben's Better biplot function
-bb_biplot <- function(x, pc1=1, pc2=2, scale=1, varimax.rotate=FALSE, pc.biplot=FALSE, limx, grid=TRUE, col, pch=21, cex.pt=1, xlab, ylab, axes=TRUE, group, group2, group3, labd, colld="black", cex.labd=0.5, font.labd=1, vectors=TRUE, whichv, expand=1, arrow.len=0.15, lwdv=2, colv="red", colvt="black", cex.labv=1, font.labv=1, axes.v=TRUE, lab_rotation=FALSE, ran_adj=FALSE, valign=0.5, circle.eq=FALSE, chull=FALSE, ellipse=FALSE, angle="lm", autolim=TRUE, nofill=FALSE, lwde=2, se=0.7, legend=FALSE, title.leg, cex.leg=0.75, horiz=FALSE, lpx, lpy, ...) {
+bb_biplot <- function(x, pc1=1, pc2=2, scale=1, varimax.rotate=FALSE, pc.biplot=FALSE, limx, grid=TRUE, col, pch=21, cex.pt=1, xlab, ylab, axes=TRUE, group, group2, group3, labd, col.labd="black", cex.labd=0.5, font.labd=1, variables=TRUE, whichv, expand=1, arrow.len=0.15, lwd.v =2, col.v="red", col.labv="black", cex.labv=1, font.labv=1, axes.v=TRUE, lab_rotation=FALSE, ran_adj=FALSE, valign=0.5, circle.eq=FALSE, chull=FALSE, ellipse=FALSE, angle="lm", autolim=TRUE, nofill=FALSE, lwd.e=2, se=0.7, legend=FALSE, title.leg, cex.leg=0.75, horiz=FALSE, lpx, lpy, ...) {
     ########################################
     ### Scale data
     # Scaling code modified from base R biplot() function [Copyright (C) 1995-2012 The R Core Team]
     xclass <- class(x)
     # prcomp() scaling
-    if(xclass=="prcomp") {
-        n <- nrow(x$x)
-        lam <- x$sdev[c(pc1, pc2)] * sqrt(n)
-        if(scale != 0) {lam <- lam ^ scale} else {lam <- 1 }
-        if(pc.biplot==TRUE) lam <- lam / sqrt(n)      
-        sco <- t(t(x$x[, c(pc1, pc2)]) / lam)
-        rot <- t(t(x$rotation[, c(pc1, pc2)]) * lam)
+    if(xclass %in% c("prcomp", "princomp")) {
+        if(xclass=="prcomp") {
+            n <- nrow(x$x)
+            lam <- x$sdev[c(pc1, pc2)] * sqrt(n)
+            if(scale != 0) {lam <- lam ^ scale} else {lam <- 1 }
+            if(pc.biplot==TRUE) lam <- lam / sqrt(n)      
+            sco <- t(t(x$x[, c(pc1, pc2)]) / lam)
+            rot <- t(t(x$rotation[, c(pc1, pc2)]) * lam)
+        }
+        # princomp() scaling
+        if(xclass=="princomp") {
+            n <- x$n.obs
+            lam <- x$sdev[c(pc1, pc2)] * sqrt(n)
+            if(scale != 0) {lam <- lam ^ scale} else {lam <- 1 }
+            if(pc.biplot==TRUE) lam <- lam / sqrt(n)      
+            sco <- t(t(x$scores[, c(pc1, pc2)]) / lam)
+            rot <- t(t(x$loadings[, c(pc1, pc2)]) * lam)
+        }
+        if(varimax.rotate==TRUE) {
+            rawl <- rot %*% diag(x$sdev[c(pc1, pc2)])
+            sco <- scale(sco) %*% varimax(rawl)$rotmat
+        }
+        # Proportion of variance
+        pvar <- x$sdev ^ 2 / sum(x$sdev ^ 2)
+    } else {
+       message("This function is designed to work with prcomp() and princomp(). For other objects, ensure you have scaled your data first. Object should be a list of matrices: 1) observations (scores), 2) rotation (loadings), 3) sd values.") 
+       sco <- x[[1]][, c(pc1, pc2)]
+       rot <- x[[2]][, c(pc1, pc2)]
+       if(length(x)>2) {
+        # Proportion of variance
+        pvar <- x[[3]] ^ 2 / sum(x[[3]] ^ 2)
+       } else {(pvar <- NULL)}
     }
-    # princomp() scaling
-    if(xclass=="princomp") {
-        n <- x$n.obs
-        lam <- x$sdev[c(pc1, pc2)] * sqrt(n)
-        if(scale != 0) {lam <- lam ^ scale} else {lam <- 1 }
-        if(pc.biplot==TRUE) lam <- lam / sqrt(n)      
-        sco <- t(t(x$scores[, c(pc1, pc2)]) / lam)
-        rot <- t(t(x$loadings[, c(pc1, pc2)]) * lam)
-    }
-    if(varimax.rotate==TRUE) {
-        rawl <- rot %*% diag(x$sdev[c(pc1, pc2)])
-        sco <- scale(sco) %*% varimax(rawl)$rotmat
-    }
-    # Proportion of variance
-    pvar <- x$sdev ^ 2 / sum(x$sdev ^ 2)
-
     ########################################
     ### Plot data / config
     # Get x/ylim values
@@ -284,13 +293,13 @@ bb_biplot <- function(x, pc1=1, pc2=2, scale=1, varimax.rotate=FALSE, pc.biplot=
     # Plot convex hulls
     if(chull==TRUE) {
         for(i in 1:nlevels(group)) {
-            polygon(sco[sco$group == i,][opin[[i]],], col=adjustcolor(c[i], alp[1]), border=adjustcolor(c[i], alp[2]), lwd=lwde)       
+            polygon(sco[sco$group == i,][opin[[i]],], col=adjustcolor(c[i], alp[1]), border=adjustcolor(c[i], alp[2]), lwd=lwd.e)       
         }
     }
     # Plot ellipses
     if(ellipse==TRUE) {
         for(i in 1:nlevels(group)) {
-            polygon(x=e[[i]]$x, y=e[[i]]$y, col=adjustcolor(c[i], alp[1]), border=adjustcolor(c[i], alp[2]), lwd=lwde)
+            polygon(x=e[[i]]$x, y=e[[i]]$y, col=adjustcolor(c[i], alp[1]), border=adjustcolor(c[i], alp[2]), lwd=lwd.e)
         }
     }
     # Plot grid
@@ -304,12 +313,12 @@ bb_biplot <- function(x, pc1=1, pc2=2, scale=1, varimax.rotate=FALSE, pc.biplot=
         if(lab_rotation==TRUE) {
             # srt rotation is not vectorised, so must run in a loop (Can be slow if lots of labels)
             for(i in 1:length(sco[,1])) {
-                text(sco[,1][i], sco[,2][i], labels=labd[i], font=font.labd, col=colld, srt=lsrt[,1][i], adj=c(lsrt[,2][i], lsrt[,2][i]), cex=cex.labd, xpd=TRUE) 
+                text(sco[,1][i], sco[,2][i], labels=labd[i], font=font.labd, col=col.labd, srt=lsrt[,1][i], adj=c(lsrt[,2][i], lsrt[,2][i]), cex=cex.labd, xpd=TRUE) 
             }
         } else {
             # Random positions
             adjld <- sample.int(4L, length(sco[,1]), replace=TRUE) 
-            text(sco[,1], sco[,2], labels=labd, font=font.labd, col=colld, pos=adjld, cex=cex.labd, xpd=TRUE)
+            text(sco[,1], sco[,2], labels=labd, font=font.labd, col=col.labd, pos=adjld, cex=cex.labd, xpd=TRUE)
         }
     }
     ### Legend
@@ -346,19 +355,18 @@ bb_biplot <- function(x, pc1=1, pc2=2, scale=1, varimax.rotate=FALSE, pc.biplot=
             lp <- legend(x=lpx, y=lpy - (lp1 * 1.25), yjust=1, xjust=0, legend=paste(levels(group3)), bty="n", col="black", pt.bg=adjustcolor("black", 0.25), pch=21, pt.cex=cex.pt*pchm, xpd=NA, cex=cex.leg, text.width=1, title=title.leg[length(title.leg)], title.font=2, title.adj=0)
         }
     }
-    ### Add vectors (arrows)
-    if(vectors==TRUE) {
+    ### Add variables vectors (arrows)
+    if(variables==TRUE) {
         if(hasArg(whichv)) {
-            # Subset vectors
-            # Get vector names
+            # Get variable names
             vname <- rownames(x$rotation)
             # Match and subset
             if(class(whichv)=="character") {
                 match <- which(vname %in% whichv)
             } else {match <- whichv}
             # Check if any matches
-            if(length(match)==0) stop("Error! Supplied vectors do not match any vector labels")
-            if(length(match)>0 & length(match)!=length(whichv)) message("Info: Some vectors do not match vector labels")
+            if(length(match)==0) stop("Error! Supplied variables do not match any variable names")
+            if(length(match)>0 & length(match)!=length(whichv)) message("Info: Some variables do not match variable names")
             # Subset
             rot <- rot[match,]
             # If only 1 match, object is converted to numeric, so convert back (otherwise breaks rest of function)
@@ -376,24 +384,24 @@ bb_biplot <- function(x, pc1=1, pc2=2, scale=1, varimax.rotate=FALSE, pc.biplot=
         }
         # Plot circle of equilibrium
         if(circle.eq==TRUE && scale==0) {
-            polygon(x=ceq[,1], y=ceq[,2], border=colv, lwd=1)
+            polygon(x=ceq[,1], y=ceq[,2], border=col.v, lwd=1)
         }
         # Draw arrows
-        arrows(x0=0, x1=rot[,1]*expand, y0=0, y1=rot[,2]*expand, col=colv, length=arrow.len, lwd=lwdv, xpd=TRUE)
+        arrows(x0=0, x1=rot[,1]*expand, y0=0, y1=rot[,2]*expand, col=col.v, length=arrow.len, lwd=lwd.v , xpd=TRUE)
         # Labels
         if(lab_rotation==TRUE) {
             # srt rotation is not vectorised, so must run in a loop (Can be slow if lots of labels)
             for(i in 1:length(rot[,1])) {
-                text(rot[,1][i]*expand, rot[,2][i]*expand, labels=rownames(rot)[i], font=font.labv, col=colvt, srt=lvsrt[,1][i], adj=c(lvsrt[,2][i], lvsrt[,3][i]), cex=cex.labv, xpd=NA) 
+                text(rot[,1][i]*expand, rot[,2][i]*expand, labels=rownames(rot)[i], font=font.labv, col=col.labv, srt=lvsrt[,1][i], adj=c(lvsrt[,2][i], lvsrt[,3][i]), cex=cex.labv, xpd=NA) 
             }
         } else {
-             text(rot[,1]*expand, rot[,2]*expand, labels=rownames(rot), font=font.labv, col=colvt, cex=cex.labv, xpd=TRUE)
+             text(rot[,1]*expand, rot[,2]*expand, labels=rownames(rot), font=font.labv, col=col.labv, cex=cex.labv, xpd=TRUE)
         }
     }
 }
 
 ### Label rotation function
-# x = matrix of xy values for vector arrows (x$rotation)
+# x = matrix of xy values
 .bb_lab_rotation <- function(x, valign, ran_adj) {
     # Angle in degrees
     x_an <- atan(x[,2] / x[,1]) * 180 / pi

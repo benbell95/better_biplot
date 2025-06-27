@@ -63,7 +63,7 @@
 # ran_adj       = Logical. Alter the adjustment position of the labels for the data observations.
 # valign        = Alignment of labels for the variables [accepted values = 0, 0.5, 1]
 
-# circle.eq     = Logical. Plot circle of equilibrium contribution [default = FALSE]. Only works when scale = 0. Takes colour from col.v value.
+# circle.eq     = Logical. Plot circle of equilibrium contribution [default = FALSE]. Only works when scale = 0. Takes colour from col.v value, and line width scales in proportion to lwd.v value.
 # chull         = Logical. Add convex hulls to the plot - group must be supplied for this to work [default = FALSE].
 # ellipse       = Logical. Draw ellipses around the data observations based on the group [default = FALSE]. 
 # angle         = Method to determine ellipse angle, either "lm" or "atan" [default = "lm"].
@@ -399,10 +399,10 @@ bb_biplot <- function(x, pc1=1, pc2=2, scale=1, varimax.rotate=FALSE, pc.biplot=
         }
         # Plot circle of equilibrium
         if(circle.eq==TRUE && scale==0) {
-            polygon(x=ceq[,1], y=ceq[,2], border=col.v, lwd=1)
+            polygon(x=ceq[,1], y=ceq[,2], border=col.v, lwd=ifelse(lwd.v <= 2, 1.25, (lwd.v / 2) * 1.25))
         }
         # Draw arrows
-        arrows(x0=0, x1=rot[,1]*expand, y0=0, y1=rot[,2]*expand, col=col.v, length=arrow.len, lwd=lwd.v , xpd=TRUE)
+        arrows(x0=0, x1=rot[,1]*expand, y0=0, y1=rot[,2]*expand, col=col.v, length=arrow.len, lwd=lwd.v, xpd=TRUE)
         # Labels
         if(lab_rotation==TRUE) {
             # srt rotation is not vectorised, so must run in a loop (Can be slow if lots of labels)

@@ -233,7 +233,7 @@ Details for the available arguments are shown in the table below. The list of ar
 | lab_rotation | Logical. Rotate labels for the data observations and variables (default = FALSE). Useful when you have lots of data points and labels. This may be slow if there are lots of labels to plot. |
 | ran_adj | Logical. Alter the adjustment position of the labels for the data observations. |
 | valign | Alignment of labels for the variables (accepted values = 0, 0.5, 1). |
-| circle.eq | Logical. Plot circle of equilibrium contribution (default = FALSE). Only works when scale = 0. Takes colour from col.v value.|
+| circle.eq | Logical. Plot circle of equilibrium contribution (default = FALSE). Only works when scale = 0. Takes colour from col.v value, and line width scales in proportion to lwd.v value.|
 | chull | Logical. Add convex hulls to the plot - group must be supplied for this to work (default = FALSE). |
 | ellipse | Logical. Draw ellipses around the data observations based on the group (default = FALSE). |
 | angle | Method to determine ellipse angle, either "lm" or "atan" (default = "lm"). |

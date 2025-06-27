@@ -212,7 +212,7 @@ Details for the available arguments are shown in the table below. The list of ar
 | cex.pt | Changes the size of the plotting symbols. |
 | xlab | Overwrite the default x axis label. |
 | ylab | Overwrite the default y axis label. |
-| axes | Logical. Plot axes (his controls all axes including variables) (default = TRUE). |
+| axes | Logical. Plot axes (This controls all axes including variables) (default = TRUE). |
 | group | Optional. Groups for the data. Should be a factor, with length that matches original data. This affects the colour of the points and also allows for ellipses or convex hulls to be drawn. This will also affect the plot symbol used if multiple pch supplied, unless group2 is also specified where symbols will then relate to the second group. |
 | group2 | Optional. Second grouping of data. Should be a factor, with length that matches original data. This affects the pch symbol only (e.g. multiple symbols within a single grouping). group must also be specified. |
 | group3 | Optional. Third grouping of data. Should be a factor, with length that matches original data. This affects the size of the pch symbol (size automatically determined based on number of groups). group must also be specified (but does not need group2). |

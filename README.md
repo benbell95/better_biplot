@@ -1,4 +1,4 @@
-# Ben's better biplot!
+# Ben's Better Biplot
 
 A script to create beautiful looking biplots using base R, without the need to use or install any additional packages. Designed to work with `prcomp()` and `princomp()` output for principal component analysis (pca), but can also work with other data. The function is compatible with the base `biplot()` function, but offers significant enhancements including new features and full customisation of the biplot.
 

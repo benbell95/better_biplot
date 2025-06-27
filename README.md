@@ -36,7 +36,7 @@ gr <- as.factor(iris[,5])
 bb_biplot(p, scale=0, group=gr, lab_rotation=TRUE, circle.eq=TRUE, legend=TRUE, title.leg="Species")
 ```
 
-
+![Better biplot example plot](https://github.com/benbell95/better_biplot/blob/90368041debbf2bd0c6c9dd9d4890c29dd510e29/better_biplot_example.svg)
 
 ## Compatibility
 

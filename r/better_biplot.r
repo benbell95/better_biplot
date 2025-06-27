@@ -324,7 +324,7 @@ bb_biplot <- function(x, pc1=1, pc2=2, scale=1, varimax.rotate=FALSE, pc.biplot=
     ### Legend
     if(legend==TRUE) {
         if(!hasArg(title.leg)) {title.leg <- c("Group", "Group 2", "Group 3") }
-        if(!hasArg(lpx)) {lpx <- max(lim)*1.37}
+        if(!hasArg(lpx)) {lpx <- max(lim)*1.38}
         if(!hasArg(lpy)) {lpy <- ifelse(grc > 1, max(lim), 0)}              
         # Group 1
         # Colours/pch if only 1 group

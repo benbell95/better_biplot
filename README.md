@@ -36,7 +36,7 @@ gr <- as.factor(iris[,5])
 bb_biplot(p, scale=0, group=gr, lab_rotation=TRUE, circle.eq=TRUE, legend=TRUE, title.leg="Species")
 ```
 
-![bb_biplot](https://github.com/user-attachments/assets/53c0e0d3-856b-4b85-9ef7-3db8f6b549e5)
+
 
 ## Compatibility
 
@@ -88,7 +88,7 @@ bb_biplot(p, scale=0, group=gr, whichv="circle.eq", circle.eq=TRUE)
 
 ## Grouping data 
 
-`bb_biplot()` allows you to use up to three groups to style the plot points, with the arguments `group`, `group2`, and `group3`. These are optional, and you can style the plot without using groups, but using groups makes styling easier and automated. 
+`bb_biplot()` allows you to use up to three groups to style the plot points, with the arguments `group`, `group2`, and `group3`. These are optional, and you can style the plot without using groups, but using groups makes styling easier and more intuitive. 
 
 Grouping data also allows [ellipses and/or convex hulls](#Ellipses-and-Convex-hulls) to be plotted, as well as allowing plot [legends](#Legends) to be added.
 

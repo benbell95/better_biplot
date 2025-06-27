@@ -53,7 +53,7 @@
 # expand        = Scale the variable arrows, if the arrows are too large or too small, change this value. Multiplier: values above 1 increase, while below 1 decrease the size.
 # arrow.len     = Length of arrow head. Use 0 to suppress.
 # lwd.v         = Line width for arrows [default = 2].
-# col.v         = Colour of the arrows [default = "red"].
+# col.v         = Colour of the arrows [default = "#d12631"].
 # col.labv      = Colour of the arrow labels [default = "black"].
 # cex.labv      = Size of the text labels for the variables.
 # font.labv     = Font type for labels [1 = normal, 2 = bold, 3 = italic, 4 = bold italic].
@@ -83,7 +83,7 @@
 
 ########################################
 ### Ben's Better biplot function
-bb_biplot <- function(x, pc1=1, pc2=2, scale=1, varimax.rotate=FALSE, pc.biplot=FALSE, limx, grid=TRUE, col, pch=21, cex.pt=1, xlab, ylab, axes=TRUE, group, group2, group3, labd, col.labd="black", cex.labd=0.5, font.labd=1, variables=TRUE, whichv, expand=1, arrow.len=0.15, lwd.v =2, col.v="red", col.labv="black", cex.labv=1, font.labv=1, axes.v=TRUE, lab_rotation=FALSE, ran_adj=FALSE, valign=0.5, circle.eq=FALSE, chull=FALSE, ellipse=FALSE, angle="lm", autolim=TRUE, nofill=FALSE, lwd.e=2, se=0.7, legend=FALSE, title.leg, cex.leg=0.75, horiz=FALSE, lpx, lpy, ...) {
+bb_biplot <- function(x, pc1=1, pc2=2, scale=1, varimax.rotate=FALSE, pc.biplot=FALSE, limx, grid=TRUE, col, pch=21, cex.pt=1, xlab, ylab, axes=TRUE, group, group2, group3, labd, col.labd="black", cex.labd=0.5, font.labd=1, variables=TRUE, whichv, expand=1, arrow.len=0.15, lwd.v =2, col.v="#d12631", col.labv="black", cex.labv=1, font.labv=1, axes.v=TRUE, lab_rotation=FALSE, ran_adj=FALSE, valign=0.5, circle.eq=FALSE, chull=FALSE, ellipse=FALSE, angle="lm", autolim=TRUE, nofill=FALSE, lwd.e=2, se=0.7, legend=FALSE, title.leg, cex.leg=0.75, horiz=FALSE, lpx, lpy, ...) {
     ########################################
     ### Scale data
     # Scaling code modified from base R biplot() function [Copyright (C) 1995-2012 The R Core Team]
@@ -257,8 +257,8 @@ bb_biplot <- function(x, pc1=1, pc2=2, scale=1, varimax.rotate=FALSE, pc.biplot=
             # Give warning message if multiple colours supplied with no group
             if(length(col)>1) {message("Warning: Multiple colours supplied, but no groups.")}  
         } else {
-        # No group or colour supplied
-        col <- "black"
+        # No group or colour supplied (blue)
+        col <- "#4050ad"
         }   
     }
     # Copy colours for fill symbols (21:25)

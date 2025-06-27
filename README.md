@@ -48,11 +48,9 @@ A comparison between the arguments is shown in the table below, and a comparison
 | --- | --- | --- |
 | x, y | x | x should be `prcomp()` or `princomp()` object (or see section below). |
 | var.axes | variables | Logical argument to plot the second set of points as arrows. |
-| pc.biplot | pc.biplot | Logical argument to apply additional scaling to second plot. |
 | col | col | Colours are generated automatically, or can be specified. |
 | cex | cex.* | Size of data labels, variable labels, and data symbols can all be specified individually. |
-| xlabs | xlab | Axes labels (titles) are generated automatically, or can be specified. Only applies the main plot (e.g. bottom x axis). |
-| ylabs | ylab | Axes labels (titles) are generated automatically, or can be specified. Only applies the main plot (e.g. left y axis). |
+| xlabs, ylabs | xlab, ylab | Axes labels (titles) are generated automatically, or can be specified. Only applies the main plot axes (e.g. bottom x axis, and left y axis). |
 | expand | expand | Adjust the size of the variable arrows. |
 | arrow.len | arrow.len | Adjust the size of the arrow heads, or suppress them. |
 | xlim, ylim | limx | Plot limits for the x and y axes are generated automatically, but can be increased or decreased. |
@@ -62,7 +60,7 @@ See [arguments section](#Arguments) for a full list of available arguments and a
 
 You can also plot other data which was not created by `prcomp()` or `princomp()`, this should be supplied as a list object, with the first item containing a matrix of at least two columns for the data (e.g. "scores"). The second list item should also contain a matrix of the variables (e.g. the rotation or loadings). A third list item can also be supplied (but this is optional), and this should contain the sd values. This data will not be scaled by `bb_biplot()` regardless of the scale setting, and should be scaled before plotting.
 
-If you use `vegan` for pca analysis and biplots, note that the scale value is reversed, e.g. scale = 0 in vegan equates to scale = 1 in base R and `bb_biplot()`, see table below.
+If you usually use `vegan` for pca analysis and biplots, note that the scale value is reversed, e.g. scale = 0 in vegan equates to scale = 1 in base R and `bb_biplot()`, see table below.
 
 | biplot() | bb_biplot() | vegan biplot.rda() |
 | --- | --- | --- |
@@ -227,7 +225,7 @@ Details for the available arguments are shown in the table below. The list of ar
 | expand | Scale the variable arrows, if the arrows are too large or too small, change this value. Multiplier: values above 1 increase, while below 1 decrease the size. |
 | arrow.len | Length of arrow head. Use 0 to suppress.  |
 | lwd.v | Line width for arrows (default = 2). |
-| col.v | Colour of the arrows (default = "red").  |
+| col.v | Colour of the arrows (default = "#d12631").  |
 | col.labv | Colour of the arrow labels (default = "black"). |
 | cex.labv | Size of the text labels for the variables. |
 | font.labv | Font type for labels (1 = normal, 2 = bold, 3 = italic, 4 = bold italic). |

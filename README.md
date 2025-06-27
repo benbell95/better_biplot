@@ -195,7 +195,7 @@ You can also call help after loading the script using `bb_info()` in the R conso
 
 ## Arguments
 
-Details for the available arguments are shown in the table below. The list of arguments is long, but the function uses sensible defaults, and does a lot of styling automatically, so you should not need to change many of these, but they are there if needed, and offer lots of customisation options if thats what you want.
+Details for the available arguments are shown in the table below. The list of arguments is long, but the function uses sensible defaults, and does a lot of styling automatically. You can create good biplots without delving into too many of these options, but they are there if needed, and offer full customisation of the plot.
 
 
 | Argument | Details |

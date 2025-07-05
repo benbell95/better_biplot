@@ -1,6 +1,6 @@
 # Ben's Better Biplot
 
-A script to create beautiful looking biplots using base R, without the need to use or install any additional packages. Designed to work with `prcomp()` and `princomp()` output for principal component analysis (pca), but can also work with other data. The function is compatible with the base `biplot()` function, but offers significant enhancements including new features and full customisation of the biplot.
+A script to create beautiful looking biplots using base R. Designed to work with `prcomp()` and `princomp()` output for principal component analysis (pca), but can also work with any other data. The function is compatible with the base `biplot()` function, but offers significant enhancements including new features and full customisation of the biplot.
 
 ## Features
 
@@ -16,11 +16,18 @@ A script to create beautiful looking biplots using base R, without the need to u
 
 ## Get the code
 
-You can load the code directly into R from Github using the following:
+You can load the code directly into R from Github using the following, which will always be the latest version:
 
 ```
-# Load biplot code in R from Github
+# Load bb_biplot script from Github
 source("https://raw.githubusercontent.com/benbell95/better_biplot/refs/heads/main/r/better_biplot.r")
+```
+
+Or download the [latest release](https://github.com/benbell95/better_biplot/releases/latest) to use locally. E.g.
+
+```
+# Load bb_biplot script from local
+source("local script location/better_biplot.r")
 ```
 
 ## Example
@@ -40,13 +47,13 @@ bb_biplot(p, scale=0, group=gr, lab_rotation=TRUE, circle.eq=TRUE, legend=TRUE, 
 
 ## Compatibility
 
-`bb_biplot()` is designed to take the output from base R `prcomp()` or `princomp()` functions, and create a biplot i.e. it does not do the pca itself, rather it plots the results. For the plot, data is scaled in the same way as the base R `biplot()` function, and it also shares several arguments, so existing code should work with this function with only minor changes. 
+`bb_biplot()` is designed to be compatible with the output from base R `prcomp()` and `princomp()` functions, and create a biplot. It does not do the pca itself, rather it plots the results. For the plot, data is scaled in the same way as the base R `biplot()` function, and it also shares several arguments, so existing code should work with this function with only minor changes. 
 
 A comparison between the arguments is shown in the table below, and a comparison between the plot output can be seen here: [bens_better_biplot_compare.pdf](https://github.com/benbell95/better_biplot/blob/7e23acd0966ee6800f6569325fa828901e9103dc/bens_better_biplot_compare.pdf).
 
 | biplot() | bb_biplot() | Details |
 | --- | --- | --- |
-| x, y | x | x should be `prcomp()` or `princomp()` object (or see section below). |
+| x, y | x, y | x should be `prcomp()` or `princomp()` object (or see section below). |
 | var.axes | variables | Logical argument to plot the second set of points as arrows. |
 | col | col | Colours are generated automatically, or can be specified. |
 | cex | cex.* | Size of data labels, variable labels, and data symbols can all be specified individually. |
@@ -58,9 +65,7 @@ A comparison between the arguments is shown in the table below, and a comparison
 
 See [arguments section](#Arguments) for a full list of available arguments and an explanation of what they do / how they work.
 
-You can also plot other data which was not created by `prcomp()` or `princomp()`, this should be supplied as a list object, with the first item containing a matrix of at least two columns for the data (e.g. "scores"). The second list item should also contain a matrix of the variables (e.g. the rotation or loadings). A third list item can also be supplied (but this is optional), and this should contain the sd values. This data will not be scaled by `bb_biplot()` regardless of the scale setting, and should be scaled before plotting.
-
-If you usually use `vegan` for pca analysis and biplots, note that the scale value is reversed, e.g. scale = 0 in vegan equates to scale = 1 in base R and `bb_biplot()`, see table below.
+Data is scaled for plotting when using `prcomp()` and `princomp()` objects. If you usually use `vegan` for pca analysis and biplots (but want to try out base R and this script), note that the scale value is reversed, e.g. scale = 0 in vegan equates to scale = 1 in base R and `bb_biplot()`, see table below.
 
 | biplot() | bb_biplot() | vegan biplot.rda() |
 | --- | --- | --- |
@@ -69,7 +74,11 @@ If you usually use `vegan` for pca analysis and biplots, note that the scale val
 
 `bb_biplot()` can also scale the second set of data (variables) using `pc.biplot=TRUE` in the same way as `biplot()`. 
 
-Additionally, you can apply a further rotation to the main data observations using `varimax.rotate=TRUE`. This uses the base R `varimax()` function with its default settings (see `?varimax` in R for details), and only applies to ` prcomp()` or `princomp()` objects.
+Additionally, you can apply a further rotation to the main data observations using `varimax.rotate=TRUE`. Currently, this uses the base R `varimax()` function with its default settings (see `?varimax` in R for details), and only applies to ` prcomp()` or `princomp()` objects.
+
+You can also plot other data which was not created by `prcomp()` or `princomp()` as x and y values. `x` should be a matrix of at least two columns for the data (e.g. "scores"), and `y` should be a matrix of the variables (e.g. the rotation or loadings). Standard deviation values can also be supplied using `xsd` which are used to calculate the proportion of variance in the plot labels. This data will not be scaled by `bb_biplot()` and should be scaled before plotting.
+
+`bb_biplot()` is a generic function, so it can be extended to plot other pca (or any other analysis object requiring a biplot) objects. See the source code for details.
 
 ## To biplot (or not to biplot?)
 
@@ -200,11 +209,14 @@ Details for the available arguments are shown in the table below. The list of ar
 
 | Argument | Details |
 | -------------- | ------------------ |
-| x | The pca (prcomp/princomp) object. You should run prcomp() or princomp() on your data before using this function. You can also plot any data in the form of a list of at least length 2, each containing a matrix of data. |
-| pc1 | The first principal component to plot (default = ). |
-| pc2 | The second principal component to plot (default = 2). |
-| scale | Scale data between 0 and 1 for plotting (default = 1). This works the same way as R base biplot() function. || pc.biplot | Logical. Additional scaling of variables (default = FALSE). This works the same way as R base biplot() function. |
-| varimax.rotate | Logical. Additionally apply varimax rotation (uses default settings, see ?varimax for help) (default = FALSE). |
+| x | Observations. Matrix with at least 2 columns. Automatically determined for prcomp() / princomp() objects. |
+| y | Variables. Matrix with at least 2 columns. Automatically determined for prcomp() / princomp() objects. |
+| xsd | Optional. Vector of standard deviation values for the variables. Automatically determined for prcomp() / princomp() objects. (Used for automatic axis labels). |
+| pc1 | The first principal component to plot (default = 1). Used when x has more than 2 columns. |
+| pc2 | The second principal component to plot (default = 2). Used when y has more than 2 columns. |
+| scale | Scale data between 0 and 1 for plotting (default = 1). This works the same way as R base biplot() function. Applies only to prcomp() or princomp() objects. |
+| pc.biplot | Logical. Additional scaling of variables (default = FALSE). This works the same way as R base biplot() function.Applies only to prcomp() or princomp() objects. |
+| varimax.rotate | Logical. Additionally apply varimax rotation (uses default settings, see ?varimax for help) (default = FALSE). Applies only to prcomp() or princomp() objects. |
 | limx | xlim and ylim are generated automatically, but you can increase or decrease using a multiplier value (e.g. 1.5) |
 | grid | Logical. Draw a grid through center x and y axes (default = TRUE). |
 | col | Optional. Colours for the plot / groups. Automatically generates a palette if not supplied. |
@@ -221,6 +233,7 @@ Details for the available arguments are shown in the table below. The list of ar
 | cex.labd | Size of text labels.   |
 | font.labd | Font type for data labels (1 = normal, 2 = bold, 3 = italic, 4 = bold italic).   |
 | variables | Logical. Whether to plot the variables or not (default = TRUE). |
+| vname | Optional. Vector of names for the variables. Uses rownames(y) by default (if exists), but, vname will override if both are supplied. |
 | whichv | Specify which variables to plot. Either character vector, where names should exactly match the variables, or integer values to match index position. If specified as "circle.eq", it will only plot variables extending beyond the circle of equilibrium contribution, overriding any other variables - must also specify circle.eq=TRUE and scale=0 to work. |
 | expand | Scale the variable arrows, if the arrows are too large or too small, change this value. Multiplier: values above 1 increase, while below 1 decrease the size. |
 | arrow.len | Length of arrow head. Use 0 to suppress.  |

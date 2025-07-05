@@ -56,6 +56,7 @@
 # font.labd     = Font type for data labels [1 = normal, 2 = bold, 3 = italic, 4 = bold italic].
 
 # variables     = Logical. Whether to plot the variables or not [default = TRUE].
+# vname         = Optional. Vector of names for the variables. Uses rownames(y) by default (if exists).
 # whichv        = Specify which variables to plot. Either character vector, where names should exactly match the variables, or integer values to match index position. If specified as "circle.eq", it will only plot variables extending beyond the circle of equilibrium contribution, overriding any other variables - must also specify circle.eq=TRUE and scale=0 to work.
 # expand        = Scale the variable arrows, if the arrows are too large or too small, change this value. Multiplier: values above 1 increase, while below 1 decrease the size.
 # arrow.len     = Length of arrow head. Use 0 to suppress.

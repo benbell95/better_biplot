@@ -1,5 +1,5 @@
 ########################################
-### Ben's Better Biplot
+### Ben's Better Biplot v1.1
 ### Plot function for creating better looking biplots in R (using only base R)
 ### Copyright 2025, Benjamin Bell.
 ### Code and updates: https://github.com/benbell95/better_biplot
@@ -21,14 +21,21 @@
 ########################################
 ### Arguments / details
 
-# x             = The pca (prcomp/princomp) object. You should run prcomp() or princomp() on your data before using this function. You can also plot any data in the form of a list of at least length 2, each containing a matrix of data.
-# pc1           = The first principal component to plot [default = 1].
-# pc2           = The second principal component to plot [default = 2].
+### Data arguments
+
+# x             = Observations. Matrix with at least 2 columns. Automatically determined for prcomp() / princomp() objects. 
+# y             = Variables. Matrix with at least 2 columns. Automatically determined for prcomp() / princomp() objects.
+# xsd           = Optional. Vector of standard deviation values for the variables. Automatically determined for prcomp() / princomp() objects. (Used for automatic axis labels).
+# pc1           = The first principal component to plot [default = 1]. Used when x has more than 2 columns.
+# pc2           = The second principal component to plot [default = 2]. Used when y has more than 2 columns.
+
+### prcomp() / princomp() specific arguments
 
 # scale         = Scale data between 0 and 1 for plotting [default = 1]. This works the same way as R base biplot() function.
 # pc.biplot     = Logical. Additional scaling of variables [default = FALSE]. This works the same way as R base biplot() function.
-
 # varimax.rotate = Logical. Additionally apply varimax rotation (uses default settings, see ?varimax for help) [default = FALSE]. 
+
+### Plot arguments
 
 # limx          = xlim and ylim are generated automatically, but you can increase or decrease using a multiplier value (e.g. 1.5)
 # grid          = Logical. Draw a grid through center x and y axes [default = TRUE].

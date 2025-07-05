@@ -91,53 +91,36 @@
 
 ########################################
 ### Ben's Better biplot function
-bb_biplot <- function(x, pc1=1, pc2=2, scale=1, varimax.rotate=FALSE, pc.biplot=FALSE, limx, grid=TRUE, col, pch=21, cex.pt=1, xlab, ylab, axes=TRUE, group, group2, group3, labd, col.labd="black", cex.labd=0.5, font.labd=1, variables=TRUE, whichv, expand=1, arrow.len=0.15, lwd.v =2, col.v="#d12631", col.labv="black", cex.labv=1, font.labv=1, axes.v=TRUE, lab_rotation=FALSE, ran_adj=FALSE, valign=0.5, circle.eq=FALSE, chull=FALSE, ellipse=FALSE, angle="lm", autolim=TRUE, nofill=FALSE, lwd.e=2, se=0.7, legend=FALSE, title.leg, cex.leg=0.75, horiz=FALSE, lpx, lpy, ...) {
+
+# Generic function
+bb_biplot <- function(x, ...) UseMethod("bb_biplot")
+
+# Default
+bb_biplot.default <- function(x, y, xsd, pc1, pc2, limx, grid=TRUE, col, pch=21, cex.pt=1, xlab, ylab, axes=TRUE, group, group2, group3, labd, col.labd="black", cex.labd=0.5, font.labd=1, variables=TRUE, vname, whichv, expand=1, arrow.len=0.15, lwd.v =2, col.v="#d12631", col.labv="black", cex.labv=1, font.labv=1, axes.v=TRUE, lab_rotation=FALSE, ran_adj=FALSE, valign=0.5, circle.eq=FALSE, chull=FALSE, ellipse=FALSE, angle="lm", autolim=TRUE, nofill=FALSE, lwd.e=2, se=0.7, legend=FALSE, title.leg, cex.leg=0.75, horiz=FALSE, lpx, lpy, ...) {
     ########################################
-    ### Scale data
-    # Scaling code modified from base R biplot() function [Copyright (C) 1995-2012 The R Core Team]
-    xclass <- class(x)
-    # prcomp() scaling
-    if(xclass %in% c("prcomp", "princomp")) {
-        if(xclass=="prcomp") {
-            n <- nrow(x$x)
-            lam <- x$sdev[c(pc1, pc2)] * sqrt(n)
-            if(scale != 0) {lam <- lam ^ scale} else {lam <- 1 }
-            if(pc.biplot==TRUE) lam <- lam / sqrt(n)      
-            sco <- t(t(x$x[, c(pc1, pc2)]) / lam)
-            rot <- t(t(x$rotation[, c(pc1, pc2)]) * lam)
-        }
-        # princomp() scaling
-        if(xclass=="princomp") {
-            n <- x$n.obs
-            lam <- x$sdev[c(pc1, pc2)] * sqrt(n)
-            if(scale != 0) {lam <- lam ^ scale} else {lam <- 1 }
-            if(pc.biplot==TRUE) lam <- lam / sqrt(n)      
-            sco <- t(t(x$scores[, c(pc1, pc2)]) / lam)
-            rot <- t(t(x$loadings[, c(pc1, pc2)]) * lam)
-        }
-        if(varimax.rotate==TRUE) {
-            rawl <- rot %*% diag(x$sdev[c(pc1, pc2)])
-            sco <- scale(sco) %*% varimax(rawl)$rotmat
-        }
-        # Proportion of variance
-        pvar <- x$sdev ^ 2 / sum(x$sdev ^ 2)
-    } else {
-       message("This function is designed to work with prcomp() and princomp(). For other objects, ensure you have scaled your data first. Object should be a list of matrices: 1) observations (scores), 2) rotation (loadings), 3) sd values.") 
-       sco <- x[[1]][, c(pc1, pc2)]
-       rot <- x[[2]][, c(pc1, pc2)]
-       if(length(x)>2) {
-        # Proportion of variance
-        pvar <- x[[3]] ^ 2 / sum(x[[3]] ^ 2)
-       } else {(pvar <- NULL)}
-    }
+    ### Default settings
+    # pc1 / pc2
+    if(hasArg(pc1)==FALSE) {pc1 <- 1}
+    if(hasArg(pc2)==FALSE) {pc2 <- 2}
+    # x,y columns
+    if(ncol(x)>2) {x <- x[, c(pc1, pc2)]}
+    if(ncol(y)>2) {y <- y[, c(pc1, pc2)]}
+    # Number of observations
+    n <- nrow(x)
+    # Number of variables
+    nv <- nrow(y)
+    # Proportion of variance
+    if(hasArg(xsd)==TRUE) {
+        pvar <- xsd ^ 2 / sum(xsd ^ 2)
+    } else { pvar <- NULL}
     ########################################
     ### Plot data / config
     # Get x/ylim values
     # Scores
-    al <- ceiling(max(abs(range(sco)))*10) / 10
+    al <- ceiling(max(abs(range(x)))*10) / 10
     lim <- c(al*-1, al)
     # Rotation
-    alr <- ceiling(max(abs(range(rot)))*10) / 10
+    alr <- ceiling(max(abs(range(y)))*10) / 10
     limr <- c(alr*-1, alr)
     # Increase x/y lim values?
     if(hasArg(limx) == TRUE) {
@@ -153,9 +136,9 @@ bb_biplot <- function(x, pc1=1, pc2=2, scale=1, varimax.rotate=FALSE, pc.biplot=
         # Needs group to work (and must be a factor)
         if(!hasArg(group)) stop("Error! group must be supplied to draw convex hulls")
         # Add group (factor) data to scores and convert to data.frame
-        sco <- cbind(sco, group) |> as.data.frame()
+        x <- cbind(x, group) |> as.data.frame()
         # Get the outer points (for plotting)
-        opin <- lapply(1:nlevels(group), \(x) chull(sco[sco$group == x,]))
+        opin <- lapply(1:nlevels(group), \(x) chull(x[x$group == x,]))
     }
     # Ellipsis
     if(ellipse==TRUE) {
@@ -163,11 +146,11 @@ bb_biplot <- function(x, pc1=1, pc2=2, scale=1, varimax.rotate=FALSE, pc.biplot=
         if(!hasArg(group)) stop("Error! group must be supplied to draw ellipses")
         # Check angle/se values
         if(angle %in% c("lm","atan")==FALSE) {stop("Error! angle should be specified as either \"lm\" or \"atan\"")}
-        if(angle=="atan" && scale==1 && se < 1) {message("Info: You may need to increase se value (e.g. se=1) to increase ellipse size")}
+        if(angle=="atan" && se < 1) {message("Info: You may need to increase se value (e.g. se=1) to increase ellipse size")}
         # Add group (factor) data to scores and convert to data.frame
-        sco <- cbind(sco, group) |> as.data.frame()
+        x <- cbind(x, group) |> as.data.frame()
         # Call function to calculate ellipses
-        e <- lapply(1:nlevels(group), \(x) .bb_ellipse(x=sco[sco$group == x,], se=se, angle=angle))
+        e <- lapply(1:nlevels(group), \(x) .bb_ellipse(x=x[x$group == x,], se=se, angle=angle))
         # Check if ellipses exceed plot limits + auto increase
         if(autolim== TRUE) {
             ec <- do.call(rbind, e)
@@ -182,8 +165,13 @@ bb_biplot <- function(x, pc1=1, pc2=2, scale=1, varimax.rotate=FALSE, pc.biplot=
         }
     }
     # Circle of equilibrium contribution
-    if(circle.eq==TRUE && scale==0) {
-    cr <- sqrt(2 / length(x$sdev)) * expand
+    if(circle.eq==TRUE) {
+        cr <- sqrt(2 / nv) * expand
+        # Check size
+        if((cr / limr[2]) < 0.1) {
+            message("Info: Small circle of equilibrium. Did you set scale=0?")
+            circle.eq <- FALSE
+        }
         # circle function
         circle <- function(r) {
             t <- seq(0, 2 * pi, 0.1)
@@ -191,12 +179,12 @@ bb_biplot <- function(x, pc1=1, pc2=2, scale=1, varimax.rotate=FALSE, pc.biplot=
             yp <- 0 + r*sin(t)
             return(data.frame(x=xp, y=yp))
         }
-    ceq <- circle(r=cr)
-    } else if(circle.eq==TRUE && scale!=0) {message("Info: You can only add circle of equilibrium when scale = 0")}
+        ceq <- circle(r=cr)
+    }
     # Label rotation
     if(lab_rotation==TRUE) {
-        lsrt <- .bb_lab_rotation(x=sco, valign=valign, ran_adj=ran_adj)
-        lvsrt <- .bb_lab_rotation(x=rot, valign=valign, ran_adj=FALSE)
+        lsrt <- .bb_lab_rotation(x=x, valign=valign, ran_adj=ran_adj)
+        lvsrt <- .bb_lab_rotation(x=y, valign=valign, ran_adj=FALSE)
     }
     # pch multiplier (default value if no group 3)
     p3 <- 1
@@ -280,8 +268,8 @@ bb_biplot <- function(x, pc1=1, pc2=2, scale=1, varimax.rotate=FALSE, pc.biplot=
     # Set alpha level
     if(nofill==FALSE) {alp <- c(0.25, 0.9)} else {alp <- c(0, 1)}
     # Axis labels
-    if(hasArg(xlab) == FALSE) {xlab <- paste("PC", pc1, " (", round(pvar[pc1]*100, 1), "%)", sep = "")}
-    if(hasArg(ylab) == FALSE) {ylab <- paste("PC", pc2, " (", round(pvar[pc2]*100, 1), "%)", sep = "")}
+    if(hasArg(xlab) == FALSE) {xlab <- paste("PC", pc1, " (", round(pvar[pc1]*100, 1), "%)", sep = "", ...)}
+    if(hasArg(ylab) == FALSE) {ylab <- paste("PC", pc2, " (", round(pvar[pc2]*100, 1), "%)", sep = "", ...)}
     ########################################
     ### Main Plot
     # par
@@ -292,7 +280,7 @@ bb_biplot <- function(x, pc1=1, pc2=2, scale=1, varimax.rotate=FALSE, pc.biplot=
     }
     on.exit(par(op))
     # Initial blank plot (plot order matters!)
-    plot(sco[,1], sco[,2], type="n", asp=1, xlim=lim, ylim=lim, xlab=xlab, ylab=ylab, axes=FALSE, ...)
+    plot(x[,1], x[,2], type="n", asp=1, xlim=lim, ylim=lim, xlab=xlab, ylab=ylab, axes=FALSE, ...)
     if(axes==TRUE) {
         axis(1, lwd=0, lwd.ticks=1)
         axis(2, lwd=0, lwd.ticks=1)
@@ -301,7 +289,7 @@ bb_biplot <- function(x, pc1=1, pc2=2, scale=1, varimax.rotate=FALSE, pc.biplot=
     # Plot convex hulls
     if(chull==TRUE) {
         for(i in 1:nlevels(group)) {
-            polygon(sco[sco$group == i,][opin[[i]],], col=adjustcolor(c[i], alp[1]), border=adjustcolor(c[i], alp[2]), lwd=lwd.e)       
+            polygon(x[x$group == i,][opin[[i]],], col=adjustcolor(c[i], alp[1]), border=adjustcolor(c[i], alp[2]), lwd=lwd.e)       
         }
     }
     # Plot ellipses
@@ -313,20 +301,20 @@ bb_biplot <- function(x, pc1=1, pc2=2, scale=1, varimax.rotate=FALSE, pc.biplot=
     # Plot grid
     if(grid==TRUE) {abline(v=0, h=0, lty=2, lwd=1, col=adjustcolor("black", 0.75))}
     # Add data points (pca scores)
-    points(sco[,1], sco[,2], pch=pch1, col=adjustcolor(col, 0.85), bg=adjustcolor(colf, 0.85), cex=cex.pt*p3)
+    points(x[,1], x[,2], pch=pch1, col=adjustcolor(col, 0.85), bg=adjustcolor(colf, 0.85), cex=cex.pt*p3)
     # Add labels
     if(hasArg(labd)) {
         # Check length matches data
-        if(length(labd) != length(sco[,1])) message("Info: Number of labels does not match number of data observations")
+        if(length(labd) != length(x[,1])) message("Info: Number of labels does not match number of data observations")
         if(lab_rotation==TRUE) {
             # srt rotation is not vectorised, so must run in a loop (Can be slow if lots of labels)
-            for(i in 1:length(sco[,1])) {
-                text(sco[,1][i], sco[,2][i], labels=labd[i], font=font.labd, col=col.labd, srt=lsrt[,1][i], adj=c(lsrt[,2][i], lsrt[,2][i]), cex=cex.labd, xpd=TRUE) 
+            for(i in 1:length(x[,1])) {
+                text(x[,1][i], x[,2][i], labels=labd[i], font=font.labd, col=col.labd, srt=lsrt[,1][i], adj=c(lsrt[,2][i], lsrt[,2][i]), cex=cex.labd, xpd=TRUE) 
             }
         } else {
             # Random positions
-            adjld <- sample.int(4L, length(sco[,1]), replace=TRUE) 
-            text(sco[,1], sco[,2], labels=labd, font=font.labd, col=col.labd, pos=adjld, cex=cex.labd, xpd=TRUE)
+            adjld <- sample.int(4L, length(x[,1]), replace=TRUE) 
+            text(x[,1], x[,2], labels=labd, font=font.labd, col=col.labd, pos=adjld, cex=cex.labd, xpd=TRUE)
         }
     }
     ### Legend
@@ -374,13 +362,14 @@ bb_biplot <- function(x, pc1=1, pc2=2, scale=1, varimax.rotate=FALSE, pc.biplot=
     }
     ### Add variables vectors (arrows)
     if(variables==TRUE) {
+        # Get variable names
+        if(!hasArg(vname)) {vname <- rownames(y)}
+        # Plot only some variables
         if(hasArg(whichv)) {
-            # Get variable names
-            vname <- rownames(x$rotation)
             if(class(whichv)=="character") {
                 if("circle.eq" %in% whichv) {
                     # Plot variables outide circle only
-                    if(circle.eq==TRUE && scale==0) {match <- which(abs(rot[,2]) > cr)}
+                    if(circle.eq==TRUE) {match <- which(abs(y[,2]) > cr)}
                 } else {
                 # Plot variables matching character names
                 match <- which(vname %in% whichv)
@@ -391,36 +380,71 @@ bb_biplot <- function(x, pc1=1, pc2=2, scale=1, varimax.rotate=FALSE, pc.biplot=
             # Check if any matches
             if(length(match)==0) stop("Error! Supplied variables do not match any variable names")
             # Subset
-            rot <- rot[match,]
+            y <- y[match,]
+            vname <- vname[match]
             # If only 1 match, object is converted to numeric, so convert back (otherwise breaks rest of function)
-            if(length(rot)==2) {
-                rot <- data.frame(PC1=rot[1], PC2=rot[2])
-                rownames(rot) <- vname[match]
+            if(length(y)==2) {
+                y <- data.frame(PC1=y[1], PC2=y[2])
             }
         } 
         # New plot window
         par(new=TRUE)
-        plot(rot[,1], rot[,2], type="n", asp=1, xlim=limr, ylim=limr, ann=FALSE, axes=FALSE)
+        plot(y[,1], y[,2], type="n", asp=1, xlim=limr, ylim=limr, ann=FALSE, axes=FALSE)
         if(axes.v==TRUE && axes!=FALSE) {
             axis(3, lwd=0, lwd.ticks=1)
             axis(4, lwd=0, lwd.ticks=1)
         }
         # Plot circle of equilibrium
-        if(circle.eq==TRUE && scale==0) {
+        if(circle.eq==TRUE) {
             polygon(x=ceq[,1], y=ceq[,2], border=col.v, lwd=ifelse(lwd.v <= 2, 1.25, (lwd.v / 2) * 1.25))
         }
         # Draw arrows
-        arrows(x0=0, x1=rot[,1]*expand, y0=0, y1=rot[,2]*expand, col=col.v, length=arrow.len, lwd=lwd.v, xpd=TRUE)
+        arrows(x0=0, x1=y[,1]*expand, y0=0, y1=y[,2]*expand, col=col.v, length=arrow.len, lwd=lwd.v, xpd=TRUE)
         # Labels
         if(lab_rotation==TRUE) {
             # srt rotation is not vectorised, so must run in a loop (Can be slow if lots of labels)
-            for(i in 1:length(rot[,1])) {
-                text(rot[,1][i]*expand, rot[,2][i]*expand, labels=rownames(rot)[i], font=font.labv, col=col.labv, srt=lvsrt[,1][i], adj=c(lvsrt[,2][i], lvsrt[,3][i]), cex=cex.labv, xpd=NA) 
+            for(i in 1:length(y[,1])) {
+                text(y[,1][i]*expand, y[,2][i]*expand, labels=vname[i], font=font.labv, col=col.labv, srt=lvsrt[,1][i], adj=c(lvsrt[,2][i], lvsrt[,3][i]), cex=cex.labv, xpd=NA) 
             }
         } else {
-             text(rot[,1]*expand, rot[,2]*expand, labels=rownames(rot), font=font.labv, col=col.labv, cex=cex.labv, xpd=TRUE)
+             text(y[,1]*expand, y[,2]*expand, labels=vname, font=font.labv, col=col.labv, cex=cex.labv, xpd=TRUE)
         }
     }
+}
+
+# prcomp
+bb_biplot.prcomp <- function(x, pc1=1, pc2=2, scale=1, varimax.rotate=FALSE, pc.biplot=FALSE, ...) {
+    # Scaling code modified from base R biplot() function [Copyright (C) 1995-2012 The R Core Team]
+    n <- nrow(x$x)
+    lam <- x$sdev[c(pc1, pc2)] * sqrt(n)
+    if(scale != 0) {lam <- lam ^ scale} else {lam <- 1 }
+    if(pc.biplot==TRUE) lam <- lam / sqrt(n)      
+    sco <- t(t(x$x[, c(pc1, pc2)]) / lam)
+    rot <- t(t(x$rotation[, c(pc1, pc2)]) * lam)
+    if(varimax.rotate==TRUE) {
+        rawl <- rot %*% diag(x$sdev[c(pc1, pc2)])
+        sco <- scale(sco) %*% varimax(rawl)$rotmat
+    }
+    # plot
+    bb_biplot.default(x=sco, y=rot, xsd=x$sdev, pc1, pc2, ...)
+}
+
+# princomp
+bb_biplot.princomp <- function(x, pc1=1, pc2=2, scale=1, varimax.rotate=FALSE, pc.biplot=FALSE, ...) {
+    # Scaling code modified from base R biplot() function [Copyright (C) 1995-2012 The R Core Team]
+    n <- x$n.obs
+    lam <- x$sdev[c(pc1, pc2)] * sqrt(n)
+    if(scale != 0) {lam <- lam ^ scale} else {lam <- 1 }
+    if(pc.biplot==TRUE) lam <- lam / sqrt(n)      
+    sco <- t(t(x$scores[, c(pc1, pc2)]) / lam)
+    rot <- t(t(x$loadings[, c(pc1, pc2)]) * lam)
+    # Varimax rotation
+    if(varimax.rotate==TRUE) {
+        rawl <- rot %*% diag(x$sdev[c(pc1, pc2)])
+        sco <- scale(sco) %*% varimax(rawl)$rotmat
+    }
+    # plot
+    bb_biplot.default(x=sco, y=rot, xsd=x$sdev, pc1, pc2, ...)
 }
 
 ### Label rotation function

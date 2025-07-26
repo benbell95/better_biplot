@@ -157,7 +157,11 @@ To add ellipses, use:
 bb_biplot(p, scale=0, group=gr, ellipse=TRUE)
 ```
 
-The colour is based on the group, but you can customise the outer line width, and/or whether it uses a fill (background) colour, see [arguments section](#Arguments) for details. Ellipses are automatically generated using the [parametric representation formula](https://en.wikipedia.org/wiki/Ellipse#Parametric_representation), and this is not always perfect. You can change how the angles are calculated by changing the `angle` argument to `angle="atan"` from `angle="lm"` which can sometimes improve the ellipse. You can also scale the ellipse using the `se` argument with is a multiplier.
+The colour is based on the group, but you can customise the outer line width, and/or whether it uses a fill (background) colour, see [arguments section](#Arguments) for details. 
+
+Ellipses are automatically generated using the [parametric representation formula](https://en.wikipedia.org/wiki/Ellipse#Parametric_representation), and this is not always perfect. You can change how the angles are calculated by changing the `angle` argument to `angle="atan"` from `angle="lm"` which can sometimes improve the ellipse. You can also scale the ellipse using the `se` argument with is a multiplier. 
+
+If ellipses are not generated correctly, try using convex hulls instead.
 
 ## Legends
 
@@ -192,7 +196,22 @@ You can customise pretty much every aspect of the plot, beyond what is mentioned
 
 For example, try using using the `lab_rotation=TRUE` argument to change how labels are plotted.
 
-You can also add other plot elements to the biplot using the various plot functions available in R. 
+You can also use other functions to add elements to the main plot before the points are drawn, and to the variables plot before the arrows & labels are drawn.
+
+To use a function before the main plot elements are drawn, add the arguments `f1` which should be the name of the function, and `f1a` which should be a list of named arguments to use with that function. The arguments list is optional, and if left blank it will use the default arguments for that function. `bb_biplot()` makes use of the `do.call()` function for this to work.
+
+For example, if you wanted to add a more extensive grid to the plot, you could use my [supergrid() function](https://github.com/benbell95/supergrid) and call this in the main function call.
+
+```
+# Load supergrid script from Github
+source("https://raw.githubusercontent.com/benbell95/supergrid/refs/heads/main/r/supergrid.r")
+
+### data generated in previous example...
+# Plot
+bb_biplot(p, scale=0, group=gr, lab_rotation=TRUE, circle.eq=TRUE, legend=TRUE, title.leg="Species", f1=supergrid)
+```
+
+You can also add other plot elements to the biplot (after using `bb_biplot()`) using the various plot functions available in R. 
 
 For example, use `text()` to add text annotations. Note that the coordinates to use relate to the variable plot (if plotted) i.e. top and right sides, or the main plot (if variables are not plotted) i.e. bottom and left sides. You can easily find out what coordinates to use by typing `par("usr")` into the R console.
 

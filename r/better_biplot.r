@@ -45,6 +45,7 @@
 # xlab          = Overwrite the default x axis label.
 # ylab          = Overwrite the default y axis label.  
 # axes          = Logical. Plot axes (This controls all axes including variables) [default = TRUE].
+# cex.axis      = Change the size of the axes, and axes labels.
 
 # group         = Optional. Groups for the data. Should be a factor, with length that matches original data. This affects the colour of the points and also allows for ellipses or convex hulls to be drawn. This will also affect the plot symbol used if multiple pch supplied, unless group2 is also specified where symbols will then relate to the second group.
 # group2        = Optional. Second grouping of data. Should be a factor, with length that matches original data. This affects the pch symbol only (e.g. multiple symbols within a single grouping). group must also be specified.
@@ -101,7 +102,7 @@
 bb_biplot <- function(x, ...) UseMethod("bb_biplot")
 
 # Default
-bb_biplot.default <- function(x, y, xsd, pc1, pc2, limx, grid=TRUE, col, pch=21, cex.pt=1, xlab, ylab, axes=TRUE, group, group2, group3, labd, col.labd="black", cex.labd=0.5, font.labd=1, variables=TRUE, vname, whichv, expand=1, arrow.len=0.15, lwd.v =2, col.v="#d12631", col.labv="black", cex.labv=1, font.labv=1, axes.v=TRUE, lab_rotation=FALSE, ran_adj=FALSE, valign=0.5, circle.eq=FALSE, chull=FALSE, ellipse=FALSE, angle="lm", autolim=TRUE, nofill=FALSE, lwd.e=2, se=0.7, legend=FALSE, title.leg, cex.leg=0.75, horiz=FALSE, lpx, lpy, f1, f1.a, f2, f2.a, ...) {
+bb_biplot.default <- function(x, y, xsd, pc1, pc2, limx, grid=TRUE, col, pch=21, cex.pt=1, xlab, ylab, axes=TRUE, cex.axis=1, group, group2, group3, labd, col.labd="black", cex.labd=0.5, font.labd=1, variables=TRUE, vname, whichv, expand=1, arrow.len=0.15, lwd.v =2, col.v="#d12631", col.labv="black", cex.labv=1, font.labv=1, axes.v=TRUE, lab_rotation=FALSE, ran_adj=FALSE, valign=0.5, circle.eq=FALSE, chull=FALSE, ellipse=FALSE, angle="lm", autolim=TRUE, nofill=FALSE, lwd.e=2, se=0.7, legend=FALSE, title.leg, cex.leg=0.75, horiz=FALSE, lpx, lpy, f1, f1.a, f2, f2.a, ...) {
     ########################################
     ### Default settings
     # pc1 / pc2
@@ -285,10 +286,10 @@ bb_biplot.default <- function(x, y, xsd, pc1, pc2, limx, grid=TRUE, col, pch=21,
     }
     on.exit(par(op))
     # Initial blank plot (plot order matters!)
-    plot(x[,1], x[,2], type="n", asp=1, xlim=lim, ylim=lim, xlab=xlab, ylab=ylab, axes=FALSE, ...)
+    plot(x[,1], x[,2], type="n", asp=1, xlim=lim, ylim=lim, xlab=xlab, ylab=ylab, axes=FALSE, cex.lab=cex.axis, ...)
     if(axes==TRUE) {
-        axis(1, lwd=0, lwd.ticks=1)
-        axis(2, lwd=0, lwd.ticks=1)
+        axis(1, lwd=0, lwd.ticks=1, cex.axis=cex.axis)
+        axis(2, lwd=0, lwd.ticks=1, cex.axis=cex.axis)
         box()
     }
     # Function before main plot
@@ -406,8 +407,8 @@ bb_biplot.default <- function(x, y, xsd, pc1, pc2, limx, grid=TRUE, col, pch=21,
         par(new=TRUE)
         plot(y[,1], y[,2], type="n", asp=1, xlim=limr, ylim=limr, ann=FALSE, axes=FALSE)
         if(axes.v==TRUE && axes!=FALSE) {
-            axis(3, lwd=0, lwd.ticks=1)
-            axis(4, lwd=0, lwd.ticks=1)
+            axis(3, lwd=0, lwd.ticks=1, cex.axis=cex.axis)
+            axis(4, lwd=0, lwd.ticks=1, cex.axis=cex.axis)
         }
         # Function before variables plot
         if(hasArg(f2)) {

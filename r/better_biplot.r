@@ -87,6 +87,11 @@
 # lpx           = Optional. Absolute position of legend on x axis (data observations).
 # lpy           = Optional. Absolute position of legend on y axis (data observations).
 
+# f1            = Run a custom function before the main plot. Name of function only, supply arguments as a named list to f1.a.
+# f1.a          = Optional. List of named arguments for the function (f1). Function will use defaults if this is blank.
+# f2            = Run a custom function before the variables plot. Name of function only, supply arguments as a named list to f2.a.
+# f2.a          = Optional. List of named arguments for the function (f2). Function will use defaults if this is blank.
+
 # ...           = Additional arguments passed to plot() [main plot only].
 
 ########################################
@@ -96,7 +101,7 @@
 bb_biplot <- function(x, ...) UseMethod("bb_biplot")
 
 # Default
-bb_biplot.default <- function(x, y, xsd, pc1, pc2, limx, grid=TRUE, col, pch=21, cex.pt=1, xlab, ylab, axes=TRUE, group, group2, group3, labd, col.labd="black", cex.labd=0.5, font.labd=1, variables=TRUE, vname, whichv, expand=1, arrow.len=0.15, lwd.v =2, col.v="#d12631", col.labv="black", cex.labv=1, font.labv=1, axes.v=TRUE, lab_rotation=FALSE, ran_adj=FALSE, valign=0.5, circle.eq=FALSE, chull=FALSE, ellipse=FALSE, angle="lm", autolim=TRUE, nofill=FALSE, lwd.e=2, se=0.7, legend=FALSE, title.leg, cex.leg=0.75, horiz=FALSE, lpx, lpy, ...) {
+bb_biplot.default <- function(x, y, xsd, pc1, pc2, limx, grid=TRUE, col, pch=21, cex.pt=1, xlab, ylab, axes=TRUE, group, group2, group3, labd, col.labd="black", cex.labd=0.5, font.labd=1, variables=TRUE, vname, whichv, expand=1, arrow.len=0.15, lwd.v =2, col.v="#d12631", col.labv="black", cex.labv=1, font.labv=1, axes.v=TRUE, lab_rotation=FALSE, ran_adj=FALSE, valign=0.5, circle.eq=FALSE, chull=FALSE, ellipse=FALSE, angle="lm", autolim=TRUE, nofill=FALSE, lwd.e=2, se=0.7, legend=FALSE, title.leg, cex.leg=0.75, horiz=FALSE, lpx, lpy, f1, f1.a, f2, f2.a, ...) {
     ########################################
     ### Default settings
     # pc1 / pc2
@@ -253,8 +258,8 @@ bb_biplot.default <- function(x, y, xsd, pc1, pc2, limx, grid=TRUE, col, pch=21,
             # Give warning message if multiple colours supplied with no group
             if(length(col)>1) {message("Warning: Multiple colours supplied, but no groups.")}  
         } else {
-        # No group or colour supplied (blue)
-        col <- "#4050ad"
+            # No group or colour supplied (blue)
+            col <- "#4050ad"
         }   
     }
     # Copy colours for fill symbols (21:25)
@@ -285,6 +290,16 @@ bb_biplot.default <- function(x, y, xsd, pc1, pc2, limx, grid=TRUE, col, pch=21,
         axis(1, lwd=0, lwd.ticks=1)
         axis(2, lwd=0, lwd.ticks=1)
         box()
+    }
+    # Function before main plot
+    if(hasArg(f1)) {
+        f1 <- match.fun(f1)
+        # Get default arguments if none supplied
+        if(!hasArg(f1.a)) {
+            f1.a <- as.list(args(f1))
+            f1.a <- f1.a[-length(f1.a)]
+        }
+        do.call(f1, f1.a)
     }
     # Plot convex hulls
     if(chull==TRUE) {
@@ -393,6 +408,16 @@ bb_biplot.default <- function(x, y, xsd, pc1, pc2, limx, grid=TRUE, col, pch=21,
         if(axes.v==TRUE && axes!=FALSE) {
             axis(3, lwd=0, lwd.ticks=1)
             axis(4, lwd=0, lwd.ticks=1)
+        }
+        # Function before variables plot
+        if(hasArg(f2)) {
+        f2 <- match.fun(f2)
+        # Get default arguments if none supplied
+        if(!hasArg(f2.a)) {
+            f2.a <- as.list(args(f2))
+            f2.a <- f2.a[-length(f2.a)]
+        }
+        do.call(f2, f2.a)
         }
         # Plot circle of equilibrium
         if(circle.eq==TRUE) {

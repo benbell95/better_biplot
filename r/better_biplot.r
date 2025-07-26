@@ -554,7 +554,7 @@ bb_info <- function(arg=FALSE) {
     }
     if(arg==TRUE) {
         message("Ben's better biplot arguments and default values.\nRefer to online readme or guide for how to use them.\n")
-        ar <- args(bb_biplot) |> as.list()
+        ar <- args(bb_biplot.default) |> as.list()
         ar <- ar[-length(ar)]
         ar <- data.frame(argument=names(ar), default.value=as.character(ar))
         print(ar)

@@ -100,8 +100,8 @@ bb_biplot.default <- function(x, y, xsd, pc1, pc2, limx, grid=TRUE, col, pch=21,
     ########################################
     ### Default settings
     # pc1 / pc2
-    if(hasArg(pc1)==FALSE) {pc1 <- 1}
-    if(hasArg(pc2)==FALSE) {pc2 <- 2}
+    if(hasArg(pc1)) {pc1 <- 1}
+    if(hasArg(pc2)) {pc2 <- 2}
     # x,y columns
     if(ncol(x)>2) {x <- x[, c(pc1, pc2)]}
     if(ncol(y)>2) {y <- y[, c(pc1, pc2)]}
@@ -110,7 +110,7 @@ bb_biplot.default <- function(x, y, xsd, pc1, pc2, limx, grid=TRUE, col, pch=21,
     # Number of variables
     nv <- nrow(y)
     # Proportion of variance
-    if(hasArg(xsd)==TRUE) {
+    if(hasArg(xsd)) {
         pvar <- xsd ^ 2 / sum(xsd ^ 2)
     } else { pvar <- NULL}
     ########################################
@@ -123,14 +123,14 @@ bb_biplot.default <- function(x, y, xsd, pc1, pc2, limx, grid=TRUE, col, pch=21,
     alr <- ceiling(max(abs(range(y)))*10) / 10
     limr <- c(alr*-1, alr)
     # Increase x/y lim values?
-    if(hasArg(limx) == TRUE) {
+    if(hasArg(limx)) {
         lim <- lim * limx
         limr <- limr * limx
     }
     # Check group(s) are factors
-    if(hasArg(group)==TRUE && class(group)!="factor") {group <- as.factor(group)}
-    if(hasArg(group2)==TRUE && class(group2)!="factor") {group2 <- as.factor(group2)}
-    if(hasArg(group3)==TRUE && class(group3)!="factor") {group3 <- as.factor(group3)}
+    if(hasArg(group) && class(group)!="factor") {group <- as.factor(group)}
+    if(hasArg(group2) && class(group2)!="factor") {group2 <- as.factor(group2)}
+    if(hasArg(group3) && class(group3)!="factor") {group3 <- as.factor(group3)}
     # Convex hulls
     if(chull==TRUE) {
         # Needs group to work (and must be a factor)
@@ -152,7 +152,7 @@ bb_biplot.default <- function(x, y, xsd, pc1, pc2, limx, grid=TRUE, col, pch=21,
         # Call function to calculate ellipses
         e <- lapply(1:nlevels(group), \(x) .bb_ellipse(x=x[x$group == x,], se=se, angle=angle))
         # Check if ellipses exceed plot limits + auto increase
-        if(autolim== TRUE) {
+        if(autolim==TRUE) {
             ec <- do.call(rbind, e)
             ecm <- max(abs(ec))
             if(ecm > max(lim)) {
@@ -191,7 +191,7 @@ bb_biplot.default <- function(x, y, xsd, pc1, pc2, limx, grid=TRUE, col, pch=21,
     ### Colour/style points by group (factor)
     # !! Overly complex due to outline and fill colours and pch combinations and size of group/group2
     # Check if group exists
-    if(hasArg(group) == TRUE) {
+    if(hasArg(group)) {
         # Group counter (for legend)
         grc <- 1
         # Check length of group is correct
@@ -199,7 +199,7 @@ bb_biplot.default <- function(x, y, xsd, pc1, pc2, limx, grid=TRUE, col, pch=21,
         # Check number of pch symbols
         if(length(pch) < nlevels(group)) {pch <- rep(pch, times=nlevels(group))} 
         # Check if colors supplied
-        if(hasArg(col)==TRUE) {
+        if(hasArg(col)) {
             # Check length of colors 
             if(length(col) < nlevels(group)) {
                 message("Warning: Number of colours does not match number of groups")
@@ -249,7 +249,7 @@ bb_biplot.default <- function(x, y, xsd, pc1, pc2, limx, grid=TRUE, col, pch=21,
             legend <- FALSE
         }
         # No group supplied, but colour supplied
-        if(hasArg(col)==TRUE) {
+        if(hasArg(col)) {
             # Give warning message if multiple colours supplied with no group
             if(length(col)>1) {message("Warning: Multiple colours supplied, but no groups.")}  
         } else {
@@ -268,8 +268,8 @@ bb_biplot.default <- function(x, y, xsd, pc1, pc2, limx, grid=TRUE, col, pch=21,
     # Set alpha level
     if(nofill==FALSE) {alp <- c(0.25, 0.9)} else {alp <- c(0, 1)}
     # Axis labels
-    if(hasArg(xlab) == FALSE) {xlab <- paste("PC", pc1, " (", round(pvar[pc1]*100, 1), "%)", sep = "", ...)}
-    if(hasArg(ylab) == FALSE) {ylab <- paste("PC", pc2, " (", round(pvar[pc2]*100, 1), "%)", sep = "", ...)}
+    if(!hasArg(xlab)) {xlab <- paste("PC", pc1, " (", round(pvar[pc1]*100, 1), "%)", sep = "", ...)}
+    if(!hasArg(ylab)) {ylab <- paste("PC", pc2, " (", round(pvar[pc2]*100, 1), "%)", sep = "", ...)}
     ########################################
     ### Main Plot
     # par

@@ -1,5 +1,5 @@
 ########################################
-### Ben's Better Biplot v1.1
+### Ben's Better Biplot v1.2
 ### Plot function for creating better looking biplots in R (using only base R)
 ### Copyright 2025, Benjamin Bell.
 ### Code and updates: https://github.com/benbell95/better_biplot

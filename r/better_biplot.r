@@ -289,7 +289,7 @@ bb_biplot.default <- function(x, y, xsd, pc1, pc2, limx, grid=TRUE, col, pch=21,
     plot(x[,1], x[,2], type="n", asp=1, xlim=lim, ylim=lim, xlab=xlab, ylab=ylab, axes=FALSE, cex.lab=cex.axis, ...)
     if(axes==TRUE) {
         axis(1, lwd=0, lwd.ticks=1, cex.axis=cex.axis)
-        axis(2, lwd=0, lwd.ticks=1, cex.axis=cex.axis)
+        axis(2, lwd=0, lwd.ticks=1, cex.axis=cex.axis, las=1)
         box()
     }
     # Function before main plot
@@ -408,7 +408,7 @@ bb_biplot.default <- function(x, y, xsd, pc1, pc2, limx, grid=TRUE, col, pch=21,
         plot(y[,1], y[,2], type="n", asp=1, xlim=limr, ylim=limr, ann=FALSE, axes=FALSE)
         if(axes.v==TRUE && axes!=FALSE) {
             axis(3, lwd=0, lwd.ticks=1, cex.axis=cex.axis)
-            axis(4, lwd=0, lwd.ticks=1, cex.axis=cex.axis)
+            axis(4, lwd=0, lwd.ticks=1, cex.axis=cex.axis, las=1)
         }
         # Function before variables plot
         if(hasArg(f2)) {

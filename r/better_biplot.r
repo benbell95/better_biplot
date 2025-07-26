@@ -145,7 +145,7 @@ bb_biplot.default <- function(x, y, xsd, pc1, pc2, limx, grid=TRUE, col, pch=21,
         # Add group (factor) data to scores and convert to data.frame
         x <- cbind(x, group) |> as.data.frame()
         # Get the outer points (for plotting)
-        opin <- lapply(1:nlevels(group), \(x) chull(x[x$group == x,]))
+        opin <- lapply(1:nlevels(group), \(x1) chull(x[x$group == x1,]))
     }
     # Ellipsis
     if(ellipse==TRUE) {
@@ -157,7 +157,7 @@ bb_biplot.default <- function(x, y, xsd, pc1, pc2, limx, grid=TRUE, col, pch=21,
         # Add group (factor) data to scores and convert to data.frame
         x <- cbind(x, group) |> as.data.frame()
         # Call function to calculate ellipses
-        e <- lapply(1:nlevels(group), \(x) .bb_ellipse(x=x[x$group == x,], se=se, angle=angle))
+        e <- lapply(1:nlevels(group), \(x1) .bb_ellipse(x=x[x$group == x1,], se=se, angle=angle))
         # Check if ellipses exceed plot limits + auto increase
         if(autolim==TRUE) {
             ec <- do.call(rbind, e)

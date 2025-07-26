@@ -225,6 +225,8 @@ Details for the available arguments are shown in the table below. The list of ar
 | xlab | Overwrite the default x axis label. |
 | ylab | Overwrite the default y axis label. |
 | axes | Logical. Plot axes (This controls all axes including variables) (default = TRUE). |
+| cex.axis | Change the size of the axes, and axes labels. |
+| cex | Globally change the size of all plot elements. Multiplies default or specified size of each plot element. |
 | group | Optional. Groups for the data. Should be a factor, with length that matches original data. This affects the colour of the points and also allows for ellipses or convex hulls to be drawn. This will also affect the plot symbol used if multiple pch supplied, unless group2 is also specified where symbols will then relate to the second group. |
 | group2 | Optional. Second grouping of data. Should be a factor, with length that matches original data. This affects the pch symbol only (e.g. multiple symbols within a single grouping). group must also be specified. |
 | group3 | Optional. Third grouping of data. Should be a factor, with length that matches original data. This affects the size of the pch symbol (size automatically determined based on number of groups). group must also be specified (but does not need group2). |
@@ -260,4 +262,8 @@ Details for the available arguments are shown in the table below. The list of ar
 | horiz | Logical. Plot legends next to each other - only works when multiple groups used (default = FALSE). Need to additionally specify lpx value to show properly (i.e. move legend position). Can also specify lpy for further control. |
 | lpx | Optional. Absolute position of legend on x axis (data observations). |
 | lpy | Optional. Absolute position of legend on y axis (data observations). |
+| f1 | Run a custom function before the main plot. Name of function only, supply arguments as a named list to f1.a. |
+| f1.a | Optional. List of named arguments for the function (f1). Function will use defaults if this is blank. |
+| f2 | Run a custom function before the variables plot. Name of function only, supply arguments as a named list to f2.a. |
+| f2.a | Optional. List of named arguments for the function (f2). Function will use defaults if this is blank. |
 | ... | Additional arguments passed to plot() (main plot only). |

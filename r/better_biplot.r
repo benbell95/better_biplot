@@ -46,6 +46,7 @@
 # ylab          = Overwrite the default y axis label.  
 # axes          = Logical. Plot axes (This controls all axes including variables) [default = TRUE].
 # cex.axis      = Change the size of the axes, and axes labels.
+# cex           = Change the size of all plot elements. Multiplies default or specified size of each plot element.
 
 # group         = Optional. Groups for the data. Should be a factor, with length that matches original data. This affects the colour of the points and also allows for ellipses or convex hulls to be drawn. This will also affect the plot symbol used if multiple pch supplied, unless group2 is also specified where symbols will then relate to the second group.
 # group2        = Optional. Second grouping of data. Should be a factor, with length that matches original data. This affects the pch symbol only (e.g. multiple symbols within a single grouping). group must also be specified.
@@ -102,7 +103,7 @@
 bb_biplot <- function(x, ...) UseMethod("bb_biplot")
 
 # Default
-bb_biplot.default <- function(x, y, xsd, pc1, pc2, limx, grid=TRUE, col, pch=21, cex.pt=1, xlab, ylab, axes=TRUE, cex.axis=1, group, group2, group3, labd, col.labd="black", cex.labd=0.5, font.labd=1, variables=TRUE, vname, whichv, expand=1, arrow.len=0.15, lwd.v =2, col.v="#d12631", col.labv="black", cex.labv=1, font.labv=1, axes.v=TRUE, lab_rotation=FALSE, ran_adj=FALSE, valign=0.5, circle.eq=FALSE, chull=FALSE, ellipse=FALSE, angle="lm", autolim=TRUE, nofill=FALSE, lwd.e=2, se=0.7, legend=FALSE, title.leg, cex.leg=0.75, horiz=FALSE, lpx, lpy, f1, f1.a, f2, f2.a, ...) {
+bb_biplot.default <- function(x, y, xsd, pc1, pc2, limx, grid=TRUE, col, pch=21, cex.pt=1, xlab, ylab, axes=TRUE, cex.axis=1, cex=1, group, group2, group3, labd, col.labd="black", cex.labd=0.5, font.labd=1, variables=TRUE, vname, whichv, expand=1, arrow.len=0.15, lwd.v =2, col.v="#d12631", col.labv="black", cex.labv=1, font.labv=1, axes.v=TRUE, lab_rotation=FALSE, ran_adj=FALSE, valign=0.5, circle.eq=FALSE, chull=FALSE, ellipse=FALSE, angle="lm", autolim=TRUE, nofill=FALSE, lwd.e=2, se=0.7, legend=FALSE, title.leg, cex.leg=0.75, horiz=FALSE, lpx, lpy, f1, f1.a, f2, f2.a, ...) {
     ########################################
     ### Default settings
     # pc1 / pc2
@@ -286,11 +287,11 @@ bb_biplot.default <- function(x, y, xsd, pc1, pc2, limx, grid=TRUE, col, pch=21,
     }
     on.exit(par(op))
     # Initial blank plot (plot order matters!)
-    plot(x[,1], x[,2], type="n", asp=1, xlim=lim, ylim=lim, xlab=xlab, ylab=ylab, axes=FALSE, cex.lab=cex.axis, ...)
+    plot(x[,1], x[,2], type="n", asp=1, xlim=lim, ylim=lim, xlab=xlab, ylab=ylab, axes=FALSE, cex.lab=cex.axis * cex, ...)
     if(axes==TRUE) {
-        axis(1, lwd=0, lwd.ticks=1, cex.axis=cex.axis)
-        axis(2, lwd=0, lwd.ticks=1, cex.axis=cex.axis, las=1)
-        box()
+        axis(1, lwd=0, lwd.ticks=1 * (cex * .5), cex.axis=cex.axis * cex)
+        axis(2, lwd=0, lwd.ticks=1 * (cex * .5), cex.axis=cex.axis * cex, las=1)
+        box(lwd=1 * (cex * .5))
     }
     # Function before main plot
     if(hasArg(f1)) {
@@ -305,19 +306,19 @@ bb_biplot.default <- function(x, y, xsd, pc1, pc2, limx, grid=TRUE, col, pch=21,
     # Plot convex hulls
     if(chull==TRUE) {
         for(i in 1:nlevels(group)) {
-            polygon(x[x$group == i,][opin[[i]],], col=adjustcolor(c[i], alp[1]), border=adjustcolor(c[i], alp[2]), lwd=lwd.e)       
+            polygon(x[x$group == i,][opin[[i]],], col=adjustcolor(c[i], alp[1]), border=adjustcolor(c[i], alp[2]), lwd=lwd.e * cex)       
         }
     }
     # Plot ellipses
     if(ellipse==TRUE) {
         for(i in 1:nlevels(group)) {
-            polygon(x=e[[i]]$x, y=e[[i]]$y, col=adjustcolor(c[i], alp[1]), border=adjustcolor(c[i], alp[2]), lwd=lwd.e)
+            polygon(x=e[[i]]$x, y=e[[i]]$y, col=adjustcolor(c[i], alp[1]), border=adjustcolor(c[i], alp[2]), lwd=lwd.e * cex)
         }
     }
     # Plot grid
-    if(grid==TRUE) {abline(v=0, h=0, lty=2, lwd=1, col=adjustcolor("black", 0.75))}
+    if(grid==TRUE) {abline(v=0, h=0, lty=2, lwd=1 * cex, col=adjustcolor("black", 0.75))}
     # Add data points (pca scores)
-    points(x[,1], x[,2], pch=pch1, col=adjustcolor(col, 0.85), bg=adjustcolor(colf, 0.85), cex=cex.pt*p3)
+    points(x[,1], x[,2], pch=pch1, col=adjustcolor(col, 0.85), bg=adjustcolor(colf, 0.85), cex=cex.pt*p3 * cex)
     # Add labels
     if(hasArg(labd)) {
         # Check length matches data
@@ -325,12 +326,12 @@ bb_biplot.default <- function(x, y, xsd, pc1, pc2, limx, grid=TRUE, col, pch=21,
         if(lab_rotation==TRUE) {
             # srt rotation is not vectorised, so must run in a loop (Can be slow if lots of labels)
             for(i in 1:length(x[,1])) {
-                text(x[,1][i], x[,2][i], labels=labd[i], font=font.labd, col=col.labd, srt=lsrt[,1][i], adj=c(lsrt[,2][i], lsrt[,2][i]), cex=cex.labd, xpd=TRUE) 
+                text(x[,1][i], x[,2][i], labels=labd[i], font=font.labd, col=col.labd, srt=lsrt[,1][i], adj=c(lsrt[,2][i], lsrt[,2][i]), cex=cex.labd * cex, xpd=TRUE) 
             }
         } else {
             # Random positions
             adjld <- sample.int(4L, length(x[,1]), replace=TRUE) 
-            text(x[,1], x[,2], labels=labd, font=font.labd, col=col.labd, pos=adjld, cex=cex.labd, xpd=TRUE)
+            text(x[,1], x[,2], labels=labd, font=font.labd, col=col.labd, pos=adjld, cex=cex.labd * cex, xpd=TRUE)
         }
     }
     ### Legend
@@ -348,7 +349,7 @@ bb_biplot.default <- function(x, y, xsd, pc1, pc2, limx, grid=TRUE, col, pch=21,
             g1p <- 22
             g1c <- "black"
         }
-        lp <- legend(x=lpx, y=lpy, yjust=1, xjust=0, legend=paste(levels(group)), bty="n", col=g1c, pt.bg=c, pch=g1p, pt.cex=cex.leg*2, xpd=NA, cex=cex.leg, text.width=1, title=title.leg[1], title.font=2, title.adj=0)
+        lp <- legend(x=lpx, y=lpy, yjust=1, xjust=0, legend=paste(levels(group)), bty="n", col=g1c, pt.bg=c, pch=g1p, pt.cex=cex.leg*2 * cex, xpd=NA, cex=cex.leg * cex, text.width=1, title=title.leg[1], title.font=2, title.adj=0)
         # Position
         lp1 <- abs(lp$text$y[1] - lp$text$y[2])  
         # Group 2
@@ -361,7 +362,7 @@ bb_biplot.default <- function(x, y, xsd, pc1, pc2, limx, grid=TRUE, col, pch=21,
                 lpy <- lp$text$y[length(lp$text$y)]
             }
             # Add legend
-            lp <- legend(x=lpx, y=lpy - (lp1 * 1.25), yjust=1, xjust=0, legend=paste(levels(group2)), bty="n", col="black", pt.bg=adjustcolor("black", 0.25), pch=pch, pt.cex=cex.pt, xpd=NA, cex=cex.leg, text.width=1, title=title.leg[2], title.font=2, title.adj=0)
+            lp <- legend(x=lpx, y=lpy - (lp1 * 1.25), yjust=1, xjust=0, legend=paste(levels(group2)), bty="n", col="black", pt.bg=adjustcolor("black", 0.25), pch=pch, pt.cex=cex.pt * cex, xpd=NA, cex=cex.leg * cex, text.width=1, title=title.leg[2], title.font=2, title.adj=0)
         }
         # Group 3
         if(hasArg(group3)) {
@@ -373,7 +374,7 @@ bb_biplot.default <- function(x, y, xsd, pc1, pc2, limx, grid=TRUE, col, pch=21,
                 lpy <- lp$text$y[length(lp$text$y)]
             }
             # Add legend
-            lp <- legend(x=lpx, y=lpy - (lp1 * 1.25), yjust=1, xjust=0, legend=paste(levels(group3)), bty="n", col="black", pt.bg=adjustcolor("black", 0.25), pch=21, pt.cex=cex.pt*pchm, xpd=NA, cex=cex.leg, text.width=1, title=title.leg[length(title.leg)], title.font=2, title.adj=0)
+            lp <- legend(x=lpx, y=lpy - (lp1 * 1.25), yjust=1, xjust=0, legend=paste(levels(group3)), bty="n", col="black", pt.bg=adjustcolor("black", 0.25), pch=21, pt.cex=cex.pt*pchm * cex, xpd=NA, cex=cex.leg * cex, text.width=1, title=title.leg[length(title.leg)], title.font=2, title.adj=0)
         }
     }
     ### Add variables vectors (arrows)
@@ -407,8 +408,8 @@ bb_biplot.default <- function(x, y, xsd, pc1, pc2, limx, grid=TRUE, col, pch=21,
         par(new=TRUE)
         plot(y[,1], y[,2], type="n", asp=1, xlim=limr, ylim=limr, ann=FALSE, axes=FALSE)
         if(axes.v==TRUE && axes!=FALSE) {
-            axis(3, lwd=0, lwd.ticks=1, cex.axis=cex.axis)
-            axis(4, lwd=0, lwd.ticks=1, cex.axis=cex.axis, las=1)
+            axis(3, lwd=0, lwd.ticks=1 * (cex * .5), cex.axis=cex.axis * cex)
+            axis(4, lwd=0, lwd.ticks=1 * (cex * .5), cex.axis=cex.axis * cex, las=1)
         }
         # Function before variables plot
         if(hasArg(f2)) {
@@ -422,18 +423,18 @@ bb_biplot.default <- function(x, y, xsd, pc1, pc2, limx, grid=TRUE, col, pch=21,
         }
         # Plot circle of equilibrium
         if(circle.eq==TRUE) {
-            polygon(x=ceq[,1], y=ceq[,2], border=col.v, lwd=ifelse(lwd.v <= 2, 1.25, (lwd.v / 2) * 1.25))
+            polygon(x=ceq[,1], y=ceq[,2], border=col.v, lwd=ifelse(lwd.v <= 2, 1.25, (lwd.v / 2) * 1.25) * cex)
         }
         # Draw arrows
-        arrows(x0=0, x1=y[,1]*expand, y0=0, y1=y[,2]*expand, col=col.v, length=arrow.len, lwd=lwd.v, xpd=TRUE)
+        arrows(x0=0, x1=y[,1]*expand, y0=0, y1=y[,2]*expand, col=col.v, length=arrow.len * cex, lwd=lwd.v * cex, xpd=TRUE)
         # Labels
         if(lab_rotation==TRUE) {
             # srt rotation is not vectorised, so must run in a loop (Can be slow if lots of labels)
             for(i in 1:length(y[,1])) {
-                text(y[,1][i]*expand, y[,2][i]*expand, labels=vname[i], font=font.labv, col=col.labv, srt=lvsrt[,1][i], adj=c(lvsrt[,2][i], lvsrt[,3][i]), cex=cex.labv, xpd=NA) 
+                text(y[,1][i]*expand, y[,2][i]*expand, labels=vname[i], font=font.labv, col=col.labv, srt=lvsrt[,1][i], adj=c(lvsrt[,2][i], lvsrt[,3][i]), cex=cex.labv * cex, xpd=NA) 
             }
         } else {
-             text(y[,1]*expand, y[,2]*expand, labels=vname, font=font.labv, col=col.labv, cex=cex.labv, xpd=TRUE)
+             text(y[,1]*expand, y[,2]*expand, labels=vname, font=font.labv, col=col.labv, cex=cex.labv * cex, xpd=TRUE)
         }
     }
 }

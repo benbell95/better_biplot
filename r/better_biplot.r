@@ -107,8 +107,8 @@ bb_biplot.default <- function(x, y, xsd, pc1, pc2, limx, grid=TRUE, col, pch=21,
     ########################################
     ### Default settings
     # pc1 / pc2
-    if(hasArg(pc1)) {pc1 <- 1}
-    if(hasArg(pc2)) {pc2 <- 2}
+    if(!hasArg(pc1)) {pc1 <- 1}
+    if(!hasArg(pc2)) {pc2 <- 2}
     # x,y columns
     if(ncol(x)>2) {x <- x[, c(pc1, pc2)]}
     if(ncol(y)>2) {y <- y[, c(pc1, pc2)]}
@@ -275,8 +275,8 @@ bb_biplot.default <- function(x, y, xsd, pc1, pc2, limx, grid=TRUE, col, pch=21,
     # Set alpha level
     if(nofill==FALSE) {alp <- c(0.25, 0.9)} else {alp <- c(0, 1)}
     # Axis labels
-    if(!hasArg(xlab)) {xlab <- paste("PC", pc1, " (", round(pvar[pc1]*100, 1), "%)", sep = "", ...)}
-    if(!hasArg(ylab)) {ylab <- paste("PC", pc2, " (", round(pvar[pc2]*100, 1), "%)", sep = "", ...)}
+    if(!hasArg(xlab)) {xlab <- paste0("PC", as.character(pc1), " (", round(pvar[pc1]*100, 1), "%)", sep = "", ...)}
+    if(!hasArg(ylab)) {ylab <- paste0("PC", as.character(pc2), " (", round(pvar[pc2]*100, 1), "%)", sep = "", ...)}
     ########################################
     ### Main Plot
     # par

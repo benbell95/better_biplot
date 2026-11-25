@@ -1,0 +1,30 @@
+Package: betterbiplot
+Title: Better Looking Biplots in Base R
+Version: 2.0.0
+Authors@R: person("Benjamin", "Bell", email = "benbell01@gmail.com", role = c("aut", "cre"))
+Description: Creates customisable biplots for Principal Component Analysis (PCA)
+    using only base R graphics. Supports 'prcomp()', 'princomp()', 'vegan::rda()',
+    'survey::svyprcomp()', 'FactoMineR::PCA()', 'ade4::dudi.pca()', and
+    'psych::principal()' objects as well as custom score and loading matrices,
+    with support for grouping by colour, symbol, and size, covariance and
+    Hotelling-t ellipses, convex hulls, centroids, spider lines, circles of
+    equilibrium contribution, label rotation, and selective legends.
+License: GPL (>= 3)
+URL: https://benbell95.github.io/better_biplot/, https://github.com/benbell95/better_biplot
+BugReports: https://github.com/benbell95/better_biplot/issues
+Encoding: UTF-8
+VignetteBuilder: knitr
+Roxygen: list(markdown = TRUE)
+Imports:
+    graphics,
+    grDevices,
+    methods,
+    stats
+Suggests:
+    knitr,
+    rmarkdown,
+    survey,
+    testthat (>= 3.0.0),
+    vegan
+Config/testthat/edition: 3
+Config/roxygen2/version: 8.1.1

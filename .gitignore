@@ -1,2 +1,8 @@
 example_workflow.r
 readings/*
+*.Rcheck/
+*.tar.gz
+.Rhistory
+.RData
+.Ruserdata
+docs/

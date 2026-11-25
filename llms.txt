@@ -13,6 +13,9 @@ compatible with the base
 significant enhancements including new features and full customisation
 of the biplot.
 
+Full package documentation and vignette are available online at
+[benbell95.github.io/better_biplot](https://benbell95.github.io/better_biplot/).
+
 ## Features
 
 - Quickly create beautiful biplots from PCA results
@@ -468,8 +471,11 @@ text(bp$centroids, labels=rownames(bp$centroids), font=2)
 
 ## Further examples and help
 
+Full package documentation and the rendered vignette are available
+online at
+[benbell95.github.io/better_biplot](https://benbell95.github.io/better_biplot/).
 More information and detailed examples on how to use this function are
-available on my blog (coming soon!):
+also available on my blog (coming soon!):
 [benjaminbell.co.uk](https://www.benjaminbell.co.uk).
 
 You can also access the built-in documentation in R using

@@ -1,6 +1,16 @@
 # Ben's Better Biplot
 
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/benbell95/better_biplot/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/benbell95/better_biplot/actions/workflows/R-CMD-check.yaml)
+[![pkgdown](https://github.com/benbell95/better_biplot/actions/workflows/pkgdown.yaml/badge.svg)](https://benbell95.github.io/better_biplot/)
+[![GitHub release](https://img.shields.io/github/v/release/benbell95/better_biplot)](https://github.com/benbell95/better_biplot/releases)
+[![R](https://img.shields.io/badge/R-Base%20R-276DC3.svg?logo=r&logoColor=white)](https://www.r-project.org/)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+<!-- badges: end -->
+
 A base R package to create beautiful looking biplots. Designed to work with `prcomp()`, `princomp()`, `vegan::rda()` (unconstrained PCA), `survey::svyprcomp()`, `FactoMineR::PCA()`, `ade4::dudi.pca()`, and `psych::principal()` objects, as well as custom score and loading matrices. The function is compatible with the base `biplot()` function, but offers significant enhancements including new features and full customisation of the biplot.
+
+Full package documentation and vignette are available online at [benbell95.github.io/better_biplot](https://benbell95.github.io/better_biplot/).
 
 ## Features
 
@@ -283,7 +293,7 @@ text(bp$centroids, labels=rownames(bp$centroids), font=2)
 
 ## Further examples and help
 
-More information and detailed examples on how to use this function are available on my blog (coming soon!): [benjaminbell.co.uk](https://www.benjaminbell.co.uk).
+Full package documentation and the rendered vignette are available online at [benbell95.github.io/better_biplot](https://benbell95.github.io/better_biplot/). More information and detailed examples on how to use this function are also available on my blog (coming soon!): [benjaminbell.co.uk](https://www.benjaminbell.co.uk).
 
 You can also access the built-in documentation in R using `?bb_biplot` (or `args(bb_biplot.default)` to see all arguments and their default values), browse the full walkthrough in `vignette("betterbiplot")`, and see [NEWS.md](NEWS.md) for full v2.0.0 release notes.
 

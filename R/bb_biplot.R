@@ -1,6 +1,6 @@
 ### Ben's Better Biplot
 ### Plot function for creating better looking biplots in R (using only base R)
-### Copyright 2025, Benjamin Bell.
+### Copyright 2025-2027, Benjamin Bell.
 ### Code and updates: https://github.com/benbell95/better_biplot
 
 #' Better Biplot
@@ -105,16 +105,17 @@
 #' @param legend Controls legend display (default `FALSE`). Accepts `FALSE`
 #'   (no legend), `TRUE` or `"all"` (legends for all supplied groups), or an
 #'   integer/numeric vector of group numbers in `1:3` (e.g. `1`, `c(1, 2)`, `3`)
-#'   to show only selected group legends in the given order. Requires `group`.
-#' @param title.leg Optional character vector of legend titles. Can match the
-#'   number of shown legends positionally, or supply titles for all groups
-#'   (indexed by group number).
+#'   to show only selected group legends in the given order. Requires `group`
+#'   (except when using `group3 = "scaled"` with `survey::svyprcomp()`).
 #' @param leg.args Named list of legend styling options:
 #'   * `cex`: Numeric size multiplier for legends (default `0.75`).
 #'   * `horiz`: Logical; arrange multiple group legends horizontally (default `FALSE`).
 #'   * `x`: Optional x-coordinate for legend placement.
 #'   * `y`: Optional y-coordinate for legend placement.
-#'   * `title`: Optional legend title(s) if `title.leg` is not supplied.
+#'   * `title`: Optional character vector of legend title(s). Can match the
+#'     number of shown legends positionally, or supply titles for all groups
+#'     (indexed by group number). Defaults to `"Group"`, `"Group 2"`,
+#'     `"Group 3"` (or `"Weight"` for `survey::svyprcomp()` weights).
 #' @param f1 Optional zero-argument function (or name) called before plotting points.
 #' @param f2 Optional zero-argument function (or name) called before plotting variable arrows.
 #' @param ... Additional graphical arguments passed to [graphics::plot()], plus
@@ -131,8 +132,8 @@
 #' styling into `lab.args`, `var.args`, `ellipse.args` (or `chull.args`), and
 #' `leg.args`, and replacing `pc1`/`pc2` with `pc = c(1, 2)`. Legacy v1.x
 #' argument names (such as `col.v`, `whichv`, `expand`, `lab_rotation`,
-#' `angle`, `se`, `cex.leg`, `lpx`, `f1.a`, `pc1`, `pc2`) are still accepted
-#' with a deprecation warning.
+#' `angle`, `se`, `title.leg`, `cex.leg`, `lpx`, `f1.a`, `pc1`, `pc2`) are still
+#' accepted with a deprecation warning.
 #'
 #' @return Invisibly returns an object of class `"bb_biplot"` containing
 #'   `scores`, `loadings`, `lim`, `limr`, `pc`, `pvar`, `group_cols`, and
@@ -145,7 +146,7 @@
 #'                 circle.eq = TRUE, ellipse = TRUE,
 #'                 ellipse.args = list(method = "cov", level = 0.95),
 #'                 centroids = TRUE, spider = TRUE,
-#'                 legend = TRUE, title.leg = "Species",
+#'                 legend = TRUE, leg.args = list(title = "Species"),
 #'                 lab.args = list(rotate = TRUE))
 #'
 #' @export
@@ -161,13 +162,12 @@ bb_biplot.default <- function(
     variables = TRUE, circle.eq = FALSE, var.args = list(),
     chull = FALSE, ellipse = FALSE, centroids = FALSE, spider = FALSE,
     ellipse.args = list(),
-    legend = FALSE, title.leg, leg.args = list(),
+    legend = FALSE, leg.args = list(),
     f1, f2, ...
 ) {
     # Resolve pc, chull.args alias, and deprecated v1.x arguments
     pc_res <- .bb_resolve_pc(pc, list(...))
-    pc1 <- pc_res$pc[1]
-    pc2 <- pc_res$pc[2]
+    pc <- pc_res$pc
 
     leg_res <- .bb_extract_legacy_args(
         pc_res$dots,
@@ -229,13 +229,27 @@ bb_biplot.default <- function(
         }
     }
 
-    if (ncol(x) > 2) x <- x[, c(pc1, pc2), drop = FALSE]
-    if (ncol(y) > 2) y <- y[, c(pc1, pc2), drop = FALSE]
+    has_xsd <- !missing(xsd) && !is.null(xsd)
+    has_limx <- !missing(limx) && !is.null(limx)
+    has_group <- !missing(group) && !is.null(group)
+    has_group2 <- !missing(group2) && !is.null(group2)
+    has_group3 <- !missing(group3) && !is.null(group3)
+    has_col <- !missing(col) && !is.null(col)
+    has_pch <- !missing(pch) && !is.null(pch)
+    if (is.null(pch)) pch <- 21
+    has_xlab <- !missing(xlab) && !is.null(xlab)
+    has_ylab <- !missing(ylab) && !is.null(ylab)
+    has_labd <- !missing(labd) && !is.null(labd)
+    has_f1 <- !missing(f1) && !is.null(f1)
+    has_f2 <- !missing(f2) && !is.null(f2)
+
+    if (ncol(x) > 2) x <- x[, pc, drop = FALSE]
+    if (ncol(y) > 2) y <- y[, pc, drop = FALSE]
 
     n <- nrow(x)
     nv <- nrow(y)
 
-    if (hasArg(xsd) && !is.null(xsd)) {
+    if (has_xsd && sum(xsd^2) > 0) {
         pvar <- xsd^2 / sum(xsd^2)
     } else {
         pvar <- NULL
@@ -247,45 +261,46 @@ bb_biplot.default <- function(
     alr <- ceiling(max(abs(range(y, na.rm = TRUE))) * 10) / 10
     limr <- c(-alr, alr)
 
-    if (hasArg(limx)) {
+    if (has_limx) {
         lim <- lim * limx
         limr <- limr * limx
     }
 
     # Check groups are factors
-    is_svy_g3 <- hasArg(group3) && inherits(group3, "bb_svy_weights")
-    if (hasArg(group) && !is.factor(group)) group <- as.factor(group)
-    if (hasArg(group2) && !is.factor(group2)) group2 <- as.factor(group2)
-    if (hasArg(group3) && !is_svy_g3 && !is.factor(group3)) group3 <- as.factor(group3)
+    is_svy_g3 <- has_group3 && inherits(group3, "bb_svy_weights")
+    if (has_group && !is.factor(group)) group <- as.factor(group)
+    if (has_group && length(group) != n) stop("Error! group must be same length as original data used in PCA")
+    if (has_group2 && !is.factor(group2)) group2 <- as.factor(group2)
+    if (has_group3 && !is_svy_g3 && !is.factor(group3)) group3 <- as.factor(group3)
 
     # Convex hulls
     if (isTRUE(chull)) {
-        if (!hasArg(group)) stop("Error! group must be supplied to draw convex hulls")
-        x_df <- as.data.frame(cbind(x, group))
-        opin <- lapply(seq_len(nlevels(group)), function(x1) {
-            sub_x <- x_df[x_df$group == x1, , drop = FALSE]
-            if (nrow(sub_x) > 0) chull(sub_x) else integer(0)
+        if (!has_group) stop("Error! group must be supplied to draw convex hulls")
+        hulls <- lapply(seq_len(nlevels(group)), function(x1) {
+            idx <- which(as.integer(group) == x1)
+            if (length(idx) == 0) return(NULL)
+            sub_x <- as.matrix(x[idx, 1:2, drop = FALSE])
+            sub_x <- sub_x[is.finite(sub_x[, 1]) & is.finite(sub_x[, 2]), , drop = FALSE]
+            if (nrow(sub_x) == 0) return(NULL)
+            sub_x[chull(sub_x[, 1], sub_x[, 2]), , drop = FALSE]
         })
-    } else {
-        x_df <- NULL
     }
 
     # Ellipses
     if (isTRUE(ellipse)) {
-        if (!hasArg(group)) stop("Error! group must be supplied to draw ellipses")
-        if (is.null(x_df)) x_df <- as.data.frame(cbind(x, group))
+        if (!has_group) stop("Error! group must be supplied to draw ellipses")
         e <- lapply(seq_len(nlevels(group)), function(x1) {
-            sub_x <- x_df[x_df$group == x1, , drop = FALSE]
-            .bb_ellipse(x = sub_x, method = ell_opt$method, level = ell_opt$level)
+            idx <- which(as.integer(group) == x1)
+            if (length(idx) == 0) return(NULL)
+            .bb_ellipse(x = x[idx, 1:2, drop = FALSE], method = ell_opt$method, level = ell_opt$level)
         })
         if (isTRUE(ell_opt$autolim)) {
             e_valid <- Filter(Negate(is.null), e)
             if (length(e_valid) > 0) {
                 ec <- do.call(rbind, e_valid)
                 ecm <- max(abs(ec), na.rm = TRUE)
-                if (ecm > max(lim)) {
-                    pc_mult <- (ecm - max(lim)) / ((ecm + max(lim)) / 2) + 1
-                    pc_mult <- ceiling(pc_mult * 10) / 10
+                if (is.finite(ecm) && max(lim) > 0 && ecm > max(lim)) {
+                    pc_mult <- ceiling((ecm / max(lim)) * 10) / 10
                     lim <- lim * pc_mult
                     limr <- limr * pc_mult
                 }
@@ -299,24 +314,28 @@ bb_biplot.default <- function(
         if ((cr / limr[2]) < 0.1) {
             message("Info: Small circle of equilibrium. Did you set scale=0?")
             circle.eq <- FALSE
+        } else {
+            t_seq <- seq(0, 2 * pi, 0.1)
+            ceq <- data.frame(x = cr * cos(t_seq), y = cr * sin(t_seq))
         }
-        t_seq <- seq(0, 2 * pi, 0.1)
-        ceq <- data.frame(x = cr * cos(t_seq), y = cr * sin(t_seq))
     }
 
     # Label rotation
     if (isTRUE(lab_opt$rotate)) {
-        lsrt <- .bb_lab_rotation(x = x, valign = lab_opt$valign, ran_adj = lab_opt$ran.adj)
-        lvsrt <- .bb_lab_rotation(x = y, valign = lab_opt$valign, ran_adj = FALSE)
+        if (has_labd) {
+            lsrt <- .bb_lab_rotation(x = x, valign = lab_opt$valign, ran_adj = lab_opt$ran.adj)
+        }
+        if (isTRUE(variables)) {
+            lvsrt <- .bb_lab_rotation(x = y, valign = lab_opt$valign, ran_adj = FALSE)
+        }
     }
 
     # Point styling by group
     p3 <- 1
-    if (hasArg(group)) {
+    if (has_group) {
         grc <- 1
-        if (length(group) != n) stop("Error! group must be same length as original data used in PCA")
 
-        if (hasArg(col)) {
+        if (has_col) {
             if (is.character(col) && length(col) == 1 && col %in% palette.pals()) {
                 col <- palette.colors(nlevels(group), palette = col, recycle = TRUE)
             } else if (is.character(col) && length(col) == 1 && col %in% hcl.pals()) {
@@ -332,10 +351,10 @@ bb_biplot.default <- function(
         group_cols <- col
         col <- col[group]
 
-        if (hasArg(group2)) {
+        if (has_group2) {
             grc <- grc + 1
             if (length(group2) != n) stop("Error! group2 must be same length as original data used in PCA")
-            if (!hasArg(pch) || length(pch) < nlevels(group2)) {
+            if (!has_pch || length(pch) < nlevels(group2)) {
                 pch <- seq(21, length.out = nlevels(group2))
                 pch <- ifelse(pch > 25, pch - 26, pch)
                 if (length(pch) > 25) pch <- ifelse(pch > 25, pch + 6, pch)
@@ -346,20 +365,9 @@ bb_biplot.default <- function(
             pch1 <- pch[group]
         }
 
-        if (hasArg(group3)) {
+        if (has_group3) {
             grc <- grc + 1
-            if (is_svy_g3) {
-                w <- as.numeric(group3)
-                if (length(w) != n) stop("Error! group3 must be same length as original data used in PCA")
-                w_max <- max(w, na.rm = TRUE)
-                if (!is.finite(w_max) || w_max <= 0) {
-                    stop("Error! survey weights must contain positive finite values")
-                }
-                p3 <- pmax(0.2, sqrt(w / w_max))
-                w_breaks <- unique(c(min(w, na.rm = TRUE), median(w, na.rm = TRUE), w_max))
-                g3_leg_lab <- format(signif(w_breaks, 3), trim = TRUE)
-                g3_leg_mult <- pmax(0.2, sqrt(w_breaks / w_max))
-            } else {
+            if (!is_svy_g3) {
                 if (length(group3) != n) stop("Error! group3 must be same length as original data used in PCA")
                 k3 <- nlevels(group3)
                 g3i <- 2 / k3
@@ -371,32 +379,34 @@ bb_biplot.default <- function(
             }
         }
     } else {
-        if (hasArg(group2)) message("Warning: group argument required when using group2.")
-        if (is_svy_g3) {
-            w <- as.numeric(group3)
-            if (length(w) != n) stop("Error! group3 must be same length as original data used in PCA")
-            w_max <- max(w, na.rm = TRUE)
-            if (!is.finite(w_max) || w_max <= 0) {
-                stop("Error! survey weights must contain positive finite values")
-            }
-            p3 <- pmax(0.2, sqrt(w / w_max))
-            w_breaks <- unique(c(min(w, na.rm = TRUE), median(w, na.rm = TRUE), w_max))
-            g3_leg_lab <- format(signif(w_breaks, 3), trim = TRUE)
-            g3_leg_mult <- pmax(0.2, sqrt(w_breaks / w_max))
-        } else if (hasArg(group3)) {
+        if (has_group2) message("Warning: group argument required when using group2.")
+        if (has_group3 && !is_svy_g3) {
             message("Warning: group argument required when using group3.")
         }
         if (length(pch) > 1) message("Warning: Multiple pch symbols supplied, but no groups.")
         pch1 <- pch
-        if (hasArg(col)) {
+        if (has_col) {
             if (length(col) > 1) message("Warning: Multiple colours supplied, but no groups.")
         } else {
             col <- "#4050ad"
         }
     }
 
-    avail_groups <- if (hasArg(group)) {
-        c(1L, if (hasArg(group2)) 2L, if (hasArg(group3)) 3L)
+    if (is_svy_g3) {
+        w <- as.numeric(group3)
+        if (length(w) != n) stop("Error! group3 must be same length as original data used in PCA")
+        w_max <- max(w, na.rm = TRUE)
+        if (!is.finite(w_max) || w_max <= 0) {
+            stop("Error! survey weights must contain positive finite values")
+        }
+        p3 <- pmax(0.2, sqrt(w / w_max))
+        w_breaks <- unique(c(min(w, na.rm = TRUE), median(w, na.rm = TRUE), w_max))
+        g3_leg_lab <- format(signif(w_breaks, 3), trim = TRUE)
+        g3_leg_mult <- pmax(0.2, sqrt(w_breaks / w_max))
+    }
+
+    avail_groups <- if (has_group) {
+        c(1L, if (has_group2) 2L, if (has_group3) 3L)
     } else if (is_svy_g3) {
         3L
     } else {
@@ -432,23 +442,30 @@ bb_biplot.default <- function(
     }
 
     colf <- col
-    pchw <- which(pch1 %in% 21:25)
-    if (length(pchw) > 0) {
-        if (length(col) < length(pch1)) col <- rep(col, length.out = length(pch1))
-        col[pchw] <- "black"
+    if (length(pch1) == 1 && length(col) > 1) {
+        if (pch1 %in% 21:25) col <- "black"
+    } else {
+        if (length(pch1) > 1 && length(col) > 1 && length(pch1) < length(col)) {
+            pch1 <- rep(pch1, length.out = length(col))
+        }
+        pchw <- which(pch1 %in% 21:25)
+        if (length(pchw) > 0) {
+            if (length(col) < length(pch1)) col <- rep(col, length.out = length(pch1))
+            col[pchw] <- "black"
+        }
     }
 
     alp <- if (isFALSE(ell_opt$nofill)) c(ell_opt$alpha, ell_opt$border.alpha) else c(0, ell_opt$border.alpha)
 
-    if (!isFALSE(centroids) && !hasArg(group)) {
+    if (!isFALSE(centroids) && !has_group) {
         stop("Error! group must be supplied to draw centroids")
     }
-    if (isTRUE(spider) && !hasArg(group)) {
+    if (isTRUE(spider) && !has_group) {
         stop("Error! group must be supplied to draw spider lines")
     }
 
     cen_mat <- NULL
-    if (hasArg(group)) {
+    if (has_group) {
         cen_mat <- matrix(NA_real_, nrow = nlevels(group), ncol = 2,
                           dimnames = list(levels(group), colnames(x)))
         for (i in seq_len(nlevels(group))) {
@@ -459,18 +476,18 @@ bb_biplot.default <- function(
         }
     }
 
-    if (!hasArg(xlab)) {
+    if (!has_xlab) {
         xlab <- if (!is.null(pvar)) {
-            paste0("PC", pc1, " (", round(pvar[pc1] * 100, 1), "%)")
+            paste0("PC", pc[1], " (", round(pvar[pc[1]] * 100, 1), "%)")
         } else {
-            paste0("PC", pc1)
+            paste0("PC", pc[1])
         }
     }
-    if (!hasArg(ylab)) {
+    if (!has_ylab) {
         ylab <- if (!is.null(pvar)) {
-            paste0("PC", pc2, " (", round(pvar[pc2] * 100, 1), "%)")
+            paste0("PC", pc[2], " (", round(pvar[pc[2]] * 100, 1), "%)")
         } else {
-            paste0("PC", pc2)
+            paste0("PC", pc[2])
         }
     }
 
@@ -493,15 +510,15 @@ bb_biplot.default <- function(
         box(lwd = 1 * (cex * 0.5))
     }
 
-    if (hasArg(f1)) {
+    if (has_f1) {
         f1 <- match.fun(f1)
         do.call(f1, if (!is.null(f1_a)) f1_a else list())
     }
 
     if (isTRUE(chull)) {
         for (i in seq_len(nlevels(group))) {
-            if (length(opin[[i]]) > 0) {
-                polygon(x_df[x_df$group == i, , drop = FALSE][opin[[i]], ],
+            if (!is.null(hulls[[i]])) {
+                polygon(x = hulls[[i]][, 1], y = hulls[[i]][, 2],
                         col = adjustcolor(group_cols[i], alp[1]),
                         border = adjustcolor(group_cols[i], alp[2]),
                         lwd = ell_opt$lwd * cex)
@@ -558,7 +575,7 @@ bb_biplot.default <- function(
         }
     }
 
-    if (hasArg(labd)) {
+    if (has_labd) {
         if (length(labd) != nrow(x)) {
             message("Info: Number of labels does not match number of data observations")
         }
@@ -570,9 +587,11 @@ bb_biplot.default <- function(
             }
         } else {
             adjld <- if (identical(lab_opt$pos, "auto")) {
-                ifelse(abs(x[, 1]) >= abs(x[, 2]),
-                       ifelse(x[, 1] >= 0, 4L, 2L),
-                       ifelse(x[, 2] >= 0, 3L, 1L))
+                pos_auto <- ifelse(abs(x[, 1]) >= abs(x[, 2]),
+                                   ifelse(x[, 1] >= 0, 4L, 2L),
+                                   ifelse(x[, 2] >= 0, 3L, 1L))
+                pos_auto[is.na(pos_auto)] <- 1L
+                pos_auto
             } else if (identical(lab_opt$pos, "random")) {
                 sample.int(4L, nrow(x), replace = TRUE)
             } else {
@@ -586,7 +605,7 @@ bb_biplot.default <- function(
     # Legend
     if (length(leg_groups) > 0) {
         default_titles <- c("Group", "Group 2", if (is_svy_g3) "Weight" else "Group 3")
-        user_titles <- if (hasArg(title.leg)) title.leg else leg_opt$title
+        user_titles <- leg_opt$title
         leg_titles <- if (is.null(user_titles)) {
             default_titles[leg_groups]
         } else if (length(user_titles) == length(leg_groups)) {
@@ -691,7 +710,7 @@ bb_biplot.default <- function(
             axis(4, lwd = 0, lwd.ticks = 1 * (cex * 0.5), cex.axis = cex.axis * cex, las = 1)
         }
 
-        if (hasArg(f2)) {
+        if (has_f2) {
             f2 <- match.fun(f2)
             do.call(f2, if (!is.null(f2_a)) f2_a else list())
         }
@@ -726,49 +745,11 @@ bb_biplot.default <- function(
             loadings = if (isTRUE(variables)) y else NULL,
             lim = lim,
             limr = limr,
-            pc = c(pc1, pc2),
+            pc = pc,
             pvar = pvar,
-            group_cols = if (hasArg(group)) group_cols else col,
+            group_cols = if (has_group) group_cols else colf,
             centroids = cen_mat
         ),
         class = "bb_biplot"
     ))
-}
-
-#' @rdname bb_biplot
-#' @export
-bb_biplot.prcomp <- function(x, pc = c(1, 2), scale = 1, varimax.rotate = FALSE,
-                             varimax.args = list(), pc.biplot = FALSE, ...) {
-    # Scaling code modified from base R biplot() [Copyright (C) 1995-2012 The R Core Team]
-    if (is.null(x$x)) {
-        stop("Error! prcomp object does not contain scores. Re-run prcomp() with retx = TRUE")
-    }
-    pc_res <- .bb_resolve_pc(pc, list(...))
-    pc1 <- pc_res$pc[1]
-    pc2 <- pc_res$pc[2]
-    n <- nrow(x$x)
-    raw_sco <- x$x[, c(pc1, pc2), drop = FALSE]
-    raw_rot <- x$rotation[, c(pc1, pc2), drop = FALSE]
-    scaled <- .bb_scale_pca(raw_sco, raw_rot, x$sdev, n, pc1, pc2, scale,
-                            pc.biplot, varimax.rotate, varimax.args)
-    do.call(bb_biplot.default, c(list(x = scaled$sco, y = scaled$rot, xsd = x$sdev, pc = pc_res$pc), pc_res$dots))
-}
-
-#' @rdname bb_biplot
-#' @export
-bb_biplot.princomp <- function(x, pc = c(1, 2), scale = 1, varimax.rotate = FALSE,
-                               varimax.args = list(), pc.biplot = FALSE, ...) {
-    # Scaling code modified from base R biplot() [Copyright (C) 1995-2012 The R Core Team]
-    if (is.null(x$scores)) {
-        stop("Error! princomp object does not contain scores. Re-run princomp() with scores = TRUE")
-    }
-    pc_res <- .bb_resolve_pc(pc, list(...))
-    pc1 <- pc_res$pc[1]
-    pc2 <- pc_res$pc[2]
-    n <- x$n.obs
-    raw_sco <- x$scores[, c(pc1, pc2), drop = FALSE]
-    raw_rot <- x$loadings[, c(pc1, pc2), drop = FALSE]
-    scaled <- .bb_scale_pca(raw_sco, raw_rot, x$sdev, n, pc1, pc2, scale,
-                            pc.biplot, varimax.rotate, varimax.args)
-    do.call(bb_biplot.default, c(list(x = scaled$sco, y = scaled$rot, xsd = x$sdev, pc = pc_res$pc), pc_res$dots))
 }

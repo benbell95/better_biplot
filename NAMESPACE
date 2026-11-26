@@ -30,7 +30,6 @@ importFrom(graphics,
   segments,
   text
 )
-importFrom(methods,hasArg)
 importFrom(stats,
   cov,
   median,

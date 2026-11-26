@@ -42,8 +42,7 @@ test_that("grouping, legends, hulls, and ellipses work", {
     expect_invisible(bb_biplot(p, scale = 0, group = gr, ellipse = TRUE,
                                ellipse.args = list(method = "t", level = 0.90, nofill = TRUE)))
     expect_invisible(bb_biplot(p, scale = 0, group = gr, group2 = gr2, group3 = gr3,
-                               legend = TRUE, title.leg = c("Sp", "G2", "G3"),
-                               leg.args = list(horiz = TRUE)))
+                               legend = TRUE, leg.args = list(title = c("Sp", "G2", "G3"), horiz = TRUE)))
 })
 
 test_that("circle.eq, var.args$which, and lab.args$rotate work", {
@@ -127,13 +126,13 @@ test_that("selective group legends work", {
     expect_invisible(bb_biplot(p, scale = 0, group = gr, group2 = gr2, group3 = gr3,
                                legend = c(3, 1), leg.args = list(horiz = TRUE)))
 
-    # title.leg positional and group-index matching
+    # leg.args$title positional and group-index matching
     expect_invisible(bb_biplot(p, scale = 0, group = gr, group2 = gr2, group3 = gr3,
-                               legend = 3, title.leg = "Size"))
+                               legend = 3, leg.args = list(title = "Size")))
     expect_invisible(bb_biplot(p, scale = 0, group = gr, group2 = gr2, group3 = gr3,
-                               legend = c(1, 3), title.leg = c("Sp", "Size")))
+                               legend = c(1, 3), leg.args = list(title = c("Sp", "Size"))))
     expect_invisible(bb_biplot(p, scale = 0, group = gr, group2 = gr2, group3 = gr3,
-                               legend = 2, title.leg = c("Sp", "Shape", "Size")))
+                               legend = 2, leg.args = list(title = c("Sp", "Shape", "Size"))))
 
     # Messages for missing groups
     expect_message(bb_biplot(p, scale = 0, group = gr, legend = 3), "not supplied")
@@ -247,4 +246,79 @@ test_that("covariance ellipses, centroids, spider lines, palettes, alpha, lab.of
 
     p_nosco <- stats::princomp(iris[-5], cor = TRUE, scores = FALSE)
     expect_error(bb_biplot(p_nosco), "scores = TRUE")
+})
+
+test_that("regression fixes for autolim, chull/ellipse, NAs, NULLs, pc, group_cols, and varimax work", {
+    pdf(NULL)
+    on.exit(dev.off(), add = TRUE)
+
+    p <- stats::prcomp(iris[-5], scale. = TRUE)
+    gr <- factor(iris$Species)
+
+    # autolim expands limits to contain large Hotelling-t ellipses
+    p_small <- stats::prcomp(iris[c(1:3, 51:53), 1:4], scale. = TRUE)
+    gr_small <- factor(iris$Species[c(1:3, 51:53)])
+    res_el <- bb_biplot(p_small, scale = 0, group = gr_small, ellipse = TRUE,
+                        ellipse.args = list(method = "t", level = 0.95))
+    e1 <- betterbiplot:::.bb_ellipse(
+        as.data.frame(res_el$scores[gr_small == levels(gr_small)[1], ]),
+        method = "t", level = 0.95
+    )
+    expect_gte(max(res_el$lim), max(abs(e1)))
+
+    # chull and ellipse work with data.frame x, NA in x, and NA in group
+    x_df <- as.data.frame(p$x)
+    expect_invisible(bb_biplot(x_df, p$rotation, group = gr, chull = TRUE, ellipse = TRUE))
+
+    x_na <- p$x
+    x_na[1, 1] <- NA_real_
+    expect_invisible(bb_biplot(x_na, p$rotation, group = gr, chull = TRUE, ellipse = TRUE))
+    expect_invisible(bb_biplot(x_na, p$rotation, labd = rownames(iris),
+                               lab.args = list(pos = "auto")))
+
+    gr_na <- gr
+    gr_na[1] <- NA
+    expect_invisible(bb_biplot(p, group = gr_na, chull = TRUE, ellipse = TRUE))
+
+    # Ungrouped group_cols returns actual fill colour, and vector col with pch = 21 works
+    res_ug <- bb_biplot(p)
+    expect_equal(res_ug$group_cols, "#4050ad")
+    res_ug_custom <- bb_biplot(p, col = "steelblue")
+    expect_equal(res_ug_custom$group_cols, "steelblue")
+    expect_invisible(bb_biplot(p, col = rep("steelblue", nrow(iris)), pch = 21))
+
+    # Zero-variance PC produces finite scores and loadings
+    iris_collinear <- iris[-5]
+    iris_collinear$dup <- iris_collinear$Sepal.Length
+    p_zero <- stats::prcomp(iris_collinear, scale. = TRUE)
+    res_zero <- bb_biplot(p_zero, pc = c(4, 5), scale = 0)
+    expect_false(anyNA(res_zero$scores))
+    expect_false(anyNA(res_zero$loadings))
+
+    # Invalid pc values error cleanly
+    expect_error(bb_biplot(p, pc = c(0, 2)), "positive integer")
+    expect_error(bb_biplot(p, pc = c(-1, 2)), "positive integer")
+    expect_error(bb_biplot(p, pc = c(1.5, 2)), "positive integer")
+
+    # Explicit NULL arguments are treated as omitted
+    expect_invisible(bb_biplot(p, group = NULL, group2 = NULL, group3 = NULL,
+                               labd = NULL, col = NULL, limx = NULL,
+                               xlab = NULL, ylab = NULL, leg.args = list(title = NULL),
+                               f1 = NULL, f2 = NULL, pch = NULL))
+
+    # Varimax rotates both scores and loadings consistently while preserving inner products and total variance
+    for (sc in c(0, 1)) {
+        res_no_vm <- bb_biplot(p, scale = sc, varimax.rotate = FALSE)
+        res_vm <- bb_biplot(p, scale = sc, varimax.rotate = TRUE)
+        expect_false(identical(res_no_vm$loadings, res_vm$loadings))
+        expect_equal(res_vm$scores %*% t(res_vm$loadings),
+                     res_no_vm$scores %*% t(res_no_vm$loadings),
+                     tolerance = 1e-12)
+        expect_equal(sum(res_vm$pvar[1:2]), sum(res_no_vm$pvar[1:2]), tolerance = 1e-12)
+    }
+    res_no_vm_pb <- bb_biplot(p, scale = 1, pc.biplot = TRUE, varimax.rotate = FALSE)
+    res_vm_pb <- bb_biplot(p, scale = 1, pc.biplot = TRUE, varimax.rotate = TRUE)
+    expect_equal(res_vm_pb$scores %*% t(res_vm_pb$loadings),
+                 res_no_vm_pb$scores %*% t(res_no_vm_pb$loadings),
+                 tolerance = 1e-12)
 })

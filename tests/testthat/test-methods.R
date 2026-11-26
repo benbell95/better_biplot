@@ -110,3 +110,56 @@ test_that("bb_biplot.principal works with psych::principal-structured objects", 
         "scores = TRUE"
     )
 })
+
+test_that("methods handle zero-variance PCs and rotated principal Vaccounted cleanly", {
+    pdf(NULL)
+    on.exit(dev.off(), add = TRUE)
+
+    iris_collinear <- iris[-5]
+    iris_collinear$dup <- iris_collinear$Sepal.Length
+    p_zero <- stats::prcomp(iris_collinear, scale. = TRUE)
+    sdev_zero <- p_zero$sdev
+    sdev_zero[length(sdev_zero)] <- 0
+
+    mock_pca_zero <- structure(
+        list(
+            eig = cbind(eigenvalue = sdev_zero^2),
+            ind = list(coord = p_zero$x),
+            var = list(coord = t(t(p_zero$rotation) * sdev_zero))
+        ),
+        class = c("PCA", "list")
+    )
+    res_pca_zero <- bb_biplot(mock_pca_zero, pc = c(4, 5), scale = 0)
+    expect_false(anyNA(res_pca_zero$scores))
+    expect_false(anyNA(res_pca_zero$loadings))
+
+    mock_dudi_zero <- structure(
+        list(
+            eig = sdev_zero^2,
+            li = as.data.frame(p_zero$x),
+            co = as.data.frame(t(t(p_zero$rotation) * sdev_zero))
+        ),
+        class = c("pca", "dudi")
+    )
+    res_dudi_zero <- bb_biplot(mock_dudi_zero, pc = c(4, 5), scale = 0)
+    expect_false(anyNA(res_dudi_zero$scores))
+    expect_false(anyNA(res_dudi_zero$loadings))
+
+    p <- stats::prcomp(iris[-5], scale. = TRUE)
+    loadings_mat <- structure(t(t(p$rotation) * p$sdev), class = "loadings")
+    v_acc <- rbind(
+        "SS loadings" = c(2.0, 1.5),
+        "Proportion Var" = c(0.50, 0.375)
+    )
+    mock_principal_vac <- structure(
+        list(
+            values = p$sdev^2,
+            Vaccounted = v_acc,
+            scores = scale(p$x),
+            loadings = loadings_mat
+        ),
+        class = c("psych", "principal")
+    )
+    res_vac <- bb_biplot(mock_principal_vac)
+    expect_equal(res_vac$pvar[1:2], c(0.50, 0.375), tolerance = 1e-12)
+})

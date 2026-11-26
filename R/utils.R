@@ -1,3 +1,54 @@
+#' Helper to apply base R biplot() scaling and optional varimax rotation
+#'
+#' @param sco Raw observation scores matrix (2 columns).
+#' @param rot Raw variable loadings/rotation matrix (2 columns).
+#' @param sdev Full vector of component standard deviations.
+#' @param n Number of observations.
+#' @param pc Integer vector of length 2 giving the plotted principal components.
+#' @param scale Numeric scaling exponent between 0 and 1.
+#' @param pc.biplot Logical; additional scaling of variables.
+#' @param varimax.rotate Logical; apply varimax rotation to scores.
+#' @param varimax.args Named list of arguments passed to `stats::varimax()`.
+#' @return A list with scaled `sco` and `rot` matrices, plus updated `sdev`.
+#' @noRd
+.bb_scale_pca <- function(sco, rot, sdev, n, pc, scale, pc.biplot,
+                          varimax.rotate, varimax.args = list()) {
+    vm_opt <- .bb_merge_args(list(normalize = TRUE, eps = 1e-5), varimax.args, "varimax.args")
+    sdev_out <- sdev
+    sdev_pc <- sdev[pc]
+
+    if (isTRUE(varimax.rotate)) {
+        rn_sco <- rownames(sco)
+        cn_sco <- colnames(sco)
+        rn_rot <- rownames(rot)
+        cn_rot <- colnames(rot)
+        rawl <- t(t(rot) * sdev_pc)
+        vm <- do.call(varimax, c(list(x = rawl), vm_opt))
+        if (!is.null(vm$rotmat)) {
+            sdev_pc_safe <- ifelse(sdev_pc > 0, sdev_pc, 1)
+            rot_l <- rawl %*% vm$rotmat
+            s_rot <- sqrt(colSums(rot_l^2))
+            s_rot_safe <- ifelse(s_rot > 0, s_rot, 1)
+            sco <- t(t(t(t(sco) / sdev_pc_safe) %*% vm$rotmat) * s_rot)
+            rot <- t(t(rot_l) / s_rot_safe)
+            rownames(sco) <- rn_sco
+            colnames(sco) <- cn_sco
+            rownames(rot) <- rn_rot
+            colnames(rot) <- cn_rot
+            sdev_pc <- s_rot
+            sdev_out[pc] <- s_rot
+        }
+    }
+
+    lam <- sdev_pc * sqrt(n)
+    if (scale != 0) lam <- lam^scale else lam <- rep(1, length(pc))
+    if (isTRUE(pc.biplot)) lam <- lam / sqrt(n)
+    lam_safe <- ifelse(lam > 0, lam, 1)
+    sco <- t(t(sco) / lam_safe)
+    rot <- t(t(rot) * lam)
+    list(sco = sco, rot = rot, sdev = sdev_out)
+}
+
 #' Compute label rotation angles and text justification
 #'
 #' @param x A two-column numeric matrix of coordinates.
@@ -31,7 +82,7 @@
 #' @noRd
 .bb_ellipse <- function(x, method = "cov", level = 0.95) {
     pts <- as.matrix(x[, 1:2, drop = FALSE])
-    pts <- pts[!is.na(pts[, 1]) & !is.na(pts[, 2]), , drop = FALSE]
+    pts <- pts[is.finite(pts[, 1]) & is.finite(pts[, 2]), , drop = FALSE]
     n_pts <- nrow(pts)
     if (n_pts < 3) return(NULL)
 
@@ -104,8 +155,9 @@
             dots$pc2 <- NULL
         }
     }
-    if (!is.numeric(pc) || length(pc) != 2 || anyNA(pc)) {
-        stop("Error! pc must be a numeric vector of length 2")
+    if (!is.numeric(pc) || length(pc) != 2 || anyNA(pc) ||
+        any(pc != as.integer(pc)) || any(pc < 1)) {
+        stop("Error! pc must be a positive integer vector of length 2")
     }
     list(pc = as.integer(pc), dots = dots)
 }
@@ -164,6 +216,7 @@
         autolim      = c("ellipse.args", "autolim"),
         nofill       = c("ellipse.args", "nofill"),
         lwd.e        = c("ellipse.args", "lwd"),
+        title.leg    = c("leg.args", "title"),
         cex.leg      = c("leg.args", "cex"),
         horiz        = c("leg.args", "horiz"),
         lpx          = c("leg.args", "x"),

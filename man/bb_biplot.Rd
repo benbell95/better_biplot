@@ -44,7 +44,6 @@ bb_biplot(x, ...)
   spider = FALSE,
   ellipse.args = list(),
   legend = FALSE,
-  title.leg,
   leg.args = list(),
   f1,
   f2,
@@ -236,11 +235,8 @@ default) or \code{"t"} (small-sample F / Hotelling's T-squared ellipse).
 \item{legend}{Controls legend display (default \code{FALSE}). Accepts \code{FALSE}
 (no legend), \code{TRUE} or \code{"all"} (legends for all supplied groups), or an
 integer/numeric vector of group numbers in \code{1:3} (e.g. \code{1}, \code{c(1, 2)}, \code{3})
-to show only selected group legends in the given order. Requires \code{group}.}
-
-\item{title.leg}{Optional character vector of legend titles. Can match the
-number of shown legends positionally, or supply titles for all groups
-(indexed by group number).}
+to show only selected group legends in the given order. Requires \code{group}
+(except when using \code{group3 = "scaled"} with \code{survey::svyprcomp()}).}
 
 \item{leg.args}{Named list of legend styling options:
 \itemize{
@@ -248,7 +244,10 @@ number of shown legends positionally, or supply titles for all groups
 \item \code{horiz}: Logical; arrange multiple group legends horizontally (default \code{FALSE}).
 \item \code{x}: Optional x-coordinate for legend placement.
 \item \code{y}: Optional y-coordinate for legend placement.
-\item \code{title}: Optional legend title(s) if \code{title.leg} is not supplied.
+\item \code{title}: Optional character vector of legend title(s). Can match the
+number of shown legends positionally, or supply titles for all groups
+(indexed by group number). Defaults to \code{"Group"}, \code{"Group 2"},
+\code{"Group 3"} (or \code{"Weight"} for \code{survey::svyprcomp()} weights).
 }}
 
 \item{f1}{Optional zero-argument function (or name) called before plotting points.}
@@ -297,8 +296,8 @@ size mapping.
 styling into \code{lab.args}, \code{var.args}, \code{ellipse.args} (or \code{chull.args}), and
 \code{leg.args}, and replacing \code{pc1}/\code{pc2} with \code{pc = c(1, 2)}. Legacy v1.x
 argument names (such as \code{col.v}, \code{whichv}, \code{expand}, \code{lab_rotation},
-\code{angle}, \code{se}, \code{cex.leg}, \code{lpx}, \code{f1.a}, \code{pc1}, \code{pc2}) are still accepted
-with a deprecation warning.
+\code{angle}, \code{se}, \code{title.leg}, \code{cex.leg}, \code{lpx}, \code{f1.a}, \code{pc1}, \code{pc2}) are still
+accepted with a deprecation warning.
 }
 
 \examples{
@@ -308,7 +307,7 @@ bp <- bb_biplot(p, scale = 0, group = gr, col = "Okabe-Ito",
                 circle.eq = TRUE, ellipse = TRUE,
                 ellipse.args = list(method = "cov", level = 0.95),
                 centroids = TRUE, spider = TRUE,
-                legend = TRUE, title.leg = "Species",
+                legend = TRUE, leg.args = list(title = "Species"),
                 lab.args = list(rotate = TRUE))
 
 }

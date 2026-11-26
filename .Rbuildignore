@@ -2,10 +2,6 @@
 ^\.Rproj\.user$
 ^README\.md$
 ^LICENSE$
-^better_biplot_example\.svg$
-^better_biplot_showcase\.svg$
-^example_workflow\.r$
-^readings$
 ^r/better_biplot\.r$
 ^\.github$
 ^_pkgdown\.yml$

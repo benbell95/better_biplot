@@ -17,7 +17,8 @@ test_that("deprecated v1.x arguments work via soft deprecation shim", {
                              angle = "atan", autolim = TRUE, nofill = TRUE,
                              lwd.e = 1.5, se = 1), "deprecated")
     expect_warning(bb_biplot(p, scale = 0, group = gr, legend = TRUE,
-                             cex.leg = 0.8, horiz = FALSE, lpx = 2, lpy = 2), "deprecated")
+                             title.leg = "Species", cex.leg = 0.8,
+                             horiz = FALSE, lpx = 2, lpy = 2), "deprecated")
     expect_warning(bb_biplot(p, scale = 0, f1 = graphics::grid, f1.a = list(col = "grey"),
                              f2 = graphics::grid, f2.a = list(col = "grey")), "deprecated")
 })

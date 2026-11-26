@@ -46,7 +46,6 @@ bb_biplot(
   spider = FALSE,
   ellipse.args = list(),
   legend = FALSE,
-  title.leg,
   leg.args = list(),
   f1,
   f2,
@@ -351,13 +350,8 @@ bb_biplot(x, pc = c(1, 2), ...)
   legend), `TRUE` or `"all"` (legends for all supplied groups), or an
   integer/numeric vector of group numbers in `1:3` (e.g. `1`, `c(1, 2)`,
   `3`) to show only selected group legends in the given order. Requires
-  `group`.
-
-- title.leg:
-
-  Optional character vector of legend titles. Can match the number of
-  shown legends positionally, or supply titles for all groups (indexed
-  by group number).
+  `group` (except when using `group3 = "scaled"` with
+  [`survey::svyprcomp()`](https://rdrr.io/pkg/survey/man/svyprcomp.html)).
 
 - leg.args:
 
@@ -372,7 +366,12 @@ bb_biplot(x, pc = c(1, 2), ...)
 
   - `y`: Optional y-coordinate for legend placement.
 
-  - `title`: Optional legend title(s) if `title.leg` is not supplied.
+  - `title`: Optional character vector of legend title(s). Can match the
+    number of shown legends positionally, or supply titles for all
+    groups (indexed by group number). Defaults to `"Group"`,
+    `"Group 2"`, `"Group 3"` (or `"Weight"` for
+    [`survey::svyprcomp()`](https://rdrr.io/pkg/survey/man/svyprcomp.html)
+    weights).
 
 - f1:
 
@@ -431,8 +430,8 @@ symbol size mapping.
 fine-grained styling into `lab.args`, `var.args`, `ellipse.args` (or
 `chull.args`), and `leg.args`, and replacing `pc1`/`pc2` with
 `pc = c(1, 2)`. Legacy v1.x argument names (such as `col.v`, `whichv`,
-`expand`, `lab_rotation`, `angle`, `se`, `cex.leg`, `lpx`, `f1.a`,
-`pc1`, `pc2`) are still accepted with a deprecation warning.
+`expand`, `lab_rotation`, `angle`, `se`, `title.leg`, `cex.leg`, `lpx`,
+`f1.a`, `pc1`, `pc2`) are still accepted with a deprecation warning.
 
 ## Examples
 
@@ -443,7 +442,7 @@ bp <- bb_biplot(p, scale = 0, group = gr, col = "Okabe-Ito",
                 circle.eq = TRUE, ellipse = TRUE,
                 ellipse.args = list(method = "cov", level = 0.95),
                 centroids = TRUE, spider = TRUE,
-                legend = TRUE, title.leg = "Species",
+                legend = TRUE, leg.args = list(title = "Species"),
                 lab.args = list(rotate = TRUE))
 
 ```

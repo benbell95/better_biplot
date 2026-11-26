@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">betterbiplot</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,6 +33,34 @@
       <small>Source: <a href="https://github.com/benbell95/better_biplot/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="2.0.1" id="betterbiplot-201">betterbiplot 2.0.1<a class="anchor" aria-label="anchor" href="#betterbiplot-201"></a></h2>
+<div class="section level3">
+<h3 id="changes--improvements-2-0-1">Changes &amp; Improvements<a class="anchor" aria-label="anchor" href="#changes--improvements-2-0-1"></a></h3>
+<ul><li>Moved <code>title.leg</code> into <code>leg.args = list(title = ...)</code> (top-level <code>title.leg</code> remains accepted with a deprecation warning).</li>
+<li>Reorganised <code>R/</code> source files (<code>R/bb_biplot.R</code>, <code>R/methods.R</code>, <code>R/utils.R</code>) and simplified S3 methods to use <code>pc</code> directly.</li>
+<li>Removed the <code>methods</code> import by replacing <code>hasArg()</code> with explicit <code>!missing(...) &amp;&amp; !is.null(...)</code> checks.</li>
+<li>Updated <code><a href="../reference/bb_biplot.html">bb_biplot.principal()</a></code> to use rotated variance proportions from <code>Vaccounted["Proportion Var", ]</code> when available.</li>
+<li>Updated GitHub Actions workflows to <code>actions/checkout@v6</code> (Node.js 24) and moved README SVG figures into <code>man/figures/</code> so they display on the <code>pkgdown</code> site.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-2-0-1">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-2-0-1"></a></h3>
+<ul><li>
+<strong>Varimax rotation consistency:</strong> Fixed <code>varimax.rotate = TRUE</code> to rotate both observation scores and variable loadings consistently (before <code>scale</code>/<code>pc.biplot</code> scaling), preserving inner products and updating axis <code>%</code> variance labels.</li>
+<li>
+<strong><code>autolim</code> ellipse limit expansion:</strong> Fixed the limit multiplier (<code>ceiling((ecm / max(lim)) * 10) / 10</code>) so large ellipses (such as small-sample Hotelling’s T-squared ellipses) are no longer clipped.</li>
+<li>
+<strong>Convex hulls and ellipses on <code>data.frame</code> and <code>NA</code> inputs:</strong> Indexed <code>x</code> directly by <code>as.integer(group)</code> and filtered non-finite coordinates, fixing silent failures when <code>x</code> is a <code>data.frame</code> and crashes when <code>x</code> or <code>group</code> contains <code>NA</code>.</li>
+<li>
+<strong><code>labd</code> with <code>pos = "auto"</code> and <code>NA</code> coordinates:</strong> Added a fallback for <code>NA</code> positions so <code><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text()</a></code> no longer throws <code>invalid 'pos' value</code>.</li>
+<li>
+<strong>Ungrouped <code>group_cols</code> and vector <code>col</code> with <code>pch = 21</code>:</strong> Returned the fill colour (<code>colf</code>) rather than <code>"black"</code> in <code>res$group_cols</code> when ungrouped, and applied black outlines consistently across all observations when passing per-observation <code>col</code> with <code>pch = 21:25</code>.</li>
+<li>
+<strong>Zero-variance PCs:</strong> Guarded against division by zero in <code>.bb_scale_pca()</code>, <code><a href="../reference/bb_biplot.html">bb_biplot.PCA()</a></code>, <code><a href="../reference/bb_biplot.html">bb_biplot.pca()</a></code>, and <code>pvar</code> so collinear/zero-variance components no longer produce <code>NaN</code>/<code>Inf</code>.</li>
+<li>
+<strong>Input validation &amp; explicit <code>NULL</code> arguments:</strong> Validated <code>pc</code> as positive integers and handled explicit <code>NULL</code> optional arguments cleanly as omitted.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="2.0.0" id="betterbiplot-200">betterbiplot 2.0.0<a class="anchor" aria-label="anchor" href="#betterbiplot-200"></a></h2>
 <div class="section level3">

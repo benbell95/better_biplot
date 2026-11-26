@@ -19,7 +19,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">betterbiplot</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -108,7 +108,7 @@ accepts any <code><a href="https://rdrr.io/r/grDevices/palette.html" class="exte
 <span>  <span class="va">p</span>, scale <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  group <span class="op">=</span> <span class="va">gr_ord</span>, group2 <span class="op">=</span> <span class="va">gr2</span>, group3 <span class="op">=</span> <span class="va">gr3</span>,</span>
 <span>  col <span class="op">=</span> <span class="st">"Okabe-Ito"</span>, alpha <span class="op">=</span> <span class="fl">0.75</span>,</span>
-<span>  legend <span class="op">=</span> <span class="cn">TRUE</span>, title.leg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Species"</span>, <span class="st">"Treatment"</span>, <span class="st">"Size"</span><span class="op">)</span></span>
+<span>  legend <span class="op">=</span> <span class="cn">TRUE</span>, leg.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>title <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Species"</span>, <span class="st">"Treatment"</span>, <span class="st">"Size"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="betterbiplot_files/figure-html/grouping-1.png" class="r-plt" alt="" width="624" style="display: block; margin: auto;"></p>
 </div>
@@ -154,8 +154,8 @@ and maximum symbol sizes:</p>
 <span><span class="fu"><a href="../reference/bb_biplot.html">bb_biplot</a></span><span class="op">(</span></span>
 <span>  <span class="va">p</span>, scale <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  group <span class="op">=</span> <span class="va">gr</span>, group2 <span class="op">=</span> <span class="va">gr2</span>, group3 <span class="op">=</span> <span class="va">gr3_many</span>,</span>
-<span>  legend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span>, title.leg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Species"</span>, <span class="st">"Weight"</span><span class="op">)</span>,</span>
-<span>  leg.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>horiz <span class="op">=</span> <span class="cn">TRUE</span>, x <span class="op">=</span> <span class="op">-</span><span class="fl">3.2</span><span class="op">)</span></span>
+<span>  legend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span>,</span>
+<span>  leg.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>title <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Species"</span>, <span class="st">"Weight"</span><span class="op">)</span>, horiz <span class="op">=</span> <span class="cn">TRUE</span>, x <span class="op">=</span> <span class="op">-</span><span class="fl">3.2</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="betterbiplot_files/figure-html/legends-1.png" class="r-plt" alt="" width="624" style="display: block; margin: auto;"></p>
 </div>
@@ -176,7 +176,7 @@ observation labels:</p>
 <span>  var.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>which <span class="op">=</span> <span class="st">"circle.eq"</span>, lab.offset <span class="op">=</span> <span class="fl">1.1</span>, col <span class="op">=</span> <span class="st">"firebrick"</span><span class="op">)</span>,</span>
 <span>  labd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">iris</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html" class="external-link">%%</a></span> <span class="fl">10</span> <span class="op">==</span> <span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">iris</span><span class="op">)</span>, <span class="cn">NA</span><span class="op">)</span>,</span>
 <span>  lab.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>pos <span class="op">=</span> <span class="st">"auto"</span>, cex <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span>,</span>
-<span>  legend <span class="op">=</span> <span class="cn">TRUE</span>, title.leg <span class="op">=</span> <span class="st">"Species"</span></span>
+<span>  legend <span class="op">=</span> <span class="cn">TRUE</span>, leg.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Species"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="betterbiplot_files/figure-html/variables-1.png" class="r-plt" alt="" width="624" style="display: block; margin: auto;"></p>
 </div>
@@ -191,7 +191,7 @@ R <code>scale</code> (<code>0</code> to <code>1</code>):</p>
 <span><span class="fu"><a href="../reference/bb_biplot.html">bb_biplot</a></span><span class="op">(</span></span>
 <span>  <span class="va">r</span>, scale <span class="op">=</span> <span class="fl">0</span>, group <span class="op">=</span> <span class="va">gr</span>, col <span class="op">=</span> <span class="st">"Okabe-Ito"</span>,</span>
 <span>  ellipse <span class="op">=</span> <span class="cn">TRUE</span>, circle.eq <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  legend <span class="op">=</span> <span class="cn">TRUE</span>, title.leg <span class="op">=</span> <span class="st">"Species"</span></span>
+<span>  legend <span class="op">=</span> <span class="cn">TRUE</span>, leg.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Species"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="betterbiplot_files/figure-html/vegan_example-1.png" class="r-plt" alt="" width="624" style="display: block; margin: auto;"></p>
 <p>For <code><a href="https://rdrr.io/pkg/survey/man/svyprcomp.html" class="external-link">survey::svyprcomp()</a></code> objects (run with
@@ -211,7 +211,7 @@ weight legend:</p>
 <span>  <span class="va">sp</span>, scale <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  group <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">env</span><span class="op">$</span><span class="va">apiclus2</span><span class="op">$</span><span class="va">stype</span><span class="op">)</span>,</span>
 <span>  group3 <span class="op">=</span> <span class="st">"scaled"</span>,</span>
-<span>  legend <span class="op">=</span> <span class="cn">TRUE</span>, title.leg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"School Type"</span>, <span class="st">"Survey Weight"</span><span class="op">)</span></span>
+<span>  legend <span class="op">=</span> <span class="cn">TRUE</span>, leg.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>title <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"School Type"</span>, <span class="st">"Survey Weight"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="betterbiplot_files/figure-html/survey_example-1.png" class="r-plt" alt="" width="624" style="display: block; margin: auto;"></p>
 </div>
@@ -228,7 +228,7 @@ before points or arrows, and capture the invisible
 <code class="sourceCode R"><span><span class="va">bp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bb_biplot.html">bb_biplot</a></span><span class="op">(</span></span>
 <span>  <span class="va">p</span>, scale <span class="op">=</span> <span class="fl">0</span>, group <span class="op">=</span> <span class="va">gr</span>, col <span class="op">=</span> <span class="st">"Okabe-Ito"</span>,</span>
 <span>  f1 <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="fu">graphics</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/graphics/grid.html" class="external-link">grid</a></span><span class="op">(</span>col <span class="op">=</span> <span class="st">"grey88"</span>, lty <span class="op">=</span> <span class="st">"dotted"</span><span class="op">)</span>,</span>
-<span>  legend <span class="op">=</span> <span class="cn">TRUE</span>, title.leg <span class="op">=</span> <span class="st">"Species"</span></span>
+<span>  legend <span class="op">=</span> <span class="cn">TRUE</span>, leg.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Species"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>usr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">bp</span><span class="op">$</span><span class="va">lim</span>, <span class="va">bp</span><span class="op">$</span><span class="va">lim</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text</a></span><span class="op">(</span><span class="va">bp</span><span class="op">$</span><span class="va">centroids</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">bp</span><span class="op">$</span><span class="va">centroids</span><span class="op">)</span>, font <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>

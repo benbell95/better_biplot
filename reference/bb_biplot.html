@@ -15,7 +15,7 @@ and loading matrices."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">betterbiplot</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -85,7 +85,6 @@ and loading matrices.</p>
 <span>  spider <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  ellipse.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  legend <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  <span class="va">title.leg</span>,</span>
 <span>  leg.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  <span class="va">f1</span>,</span>
 <span>  <span class="va">f2</span>,</span>
@@ -341,13 +340,8 @@ default) or <code>"t"</code> (small-sample F / Hotelling's T-squared ellipse).</
 <dd><p>Controls legend display (default <code>FALSE</code>). Accepts <code>FALSE</code>
 (no legend), <code>TRUE</code> or <code>"all"</code> (legends for all supplied groups), or an
 integer/numeric vector of group numbers in <code>1:3</code> (e.g. <code>1</code>, <code>c(1, 2)</code>, <code>3</code>)
-to show only selected group legends in the given order. Requires <code>group</code>.</p></dd>
-
-
-<dt id="arg-title-leg">title.leg<a class="anchor" aria-label="anchor" href="#arg-title-leg"></a></dt>
-<dd><p>Optional character vector of legend titles. Can match the
-number of shown legends positionally, or supply titles for all groups
-(indexed by group number).</p></dd>
+to show only selected group legends in the given order. Requires <code>group</code>
+(except when using <code>group3 = "scaled"</code> with <code><a href="https://rdrr.io/pkg/survey/man/svyprcomp.html" class="external-link">survey::svyprcomp()</a></code>).</p></dd>
 
 
 <dt id="arg-leg-args">leg.args<a class="anchor" aria-label="anchor" href="#arg-leg-args"></a></dt>
@@ -355,7 +349,10 @@ number of shown legends positionally, or supply titles for all groups
 <li><p><code>horiz</code>: Logical; arrange multiple group legends horizontally (default <code>FALSE</code>).</p></li>
 <li><p><code>x</code>: Optional x-coordinate for legend placement.</p></li>
 <li><p><code>y</code>: Optional y-coordinate for legend placement.</p></li>
-<li><p><code>title</code>: Optional legend title(s) if <code>title.leg</code> is not supplied.</p></li>
+<li><p><code>title</code>: Optional character vector of legend title(s). Can match the
+number of shown legends positionally, or supply titles for all groups
+(indexed by group number). Defaults to <code>"Group"</code>, <code>"Group 2"</code>,
+<code>"Group 3"</code> (or <code>"Weight"</code> for <code><a href="https://rdrr.io/pkg/survey/man/svyprcomp.html" class="external-link">survey::svyprcomp()</a></code> weights).</p></li>
 </ul></dd>
 
 
@@ -412,8 +409,8 @@ size mapping.</p>
 styling into <code>lab.args</code>, <code>var.args</code>, <code>ellipse.args</code> (or <code>chull.args</code>), and
 <code>leg.args</code>, and replacing <code>pc1</code>/<code>pc2</code> with <code>pc = c(1, 2)</code>. Legacy v1.x
 argument names (such as <code>col.v</code>, <code>whichv</code>, <code>expand</code>, <code>lab_rotation</code>,
-<code>angle</code>, <code>se</code>, <code>cex.leg</code>, <code>lpx</code>, <code>f1.a</code>, <code>pc1</code>, <code>pc2</code>) are still accepted
-with a deprecation warning.</p>
+<code>angle</code>, <code>se</code>, <code>title.leg</code>, <code>cex.leg</code>, <code>lpx</code>, <code>f1.a</code>, <code>pc1</code>, <code>pc2</code>) are still
+accepted with a deprecation warning.</p>
     </div>
 
     <div class="section level2">
@@ -424,7 +421,7 @@ with a deprecation warning.</p>
 <span class="r-in"><span>                circle.eq <span class="op">=</span> <span class="cn">TRUE</span>, ellipse <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>                ellipse.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>method <span class="op">=</span> <span class="st">"cov"</span>, level <span class="op">=</span> <span class="fl">0.95</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                centroids <span class="op">=</span> <span class="cn">TRUE</span>, spider <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
-<span class="r-in"><span>                legend <span class="op">=</span> <span class="cn">TRUE</span>, title.leg <span class="op">=</span> <span class="st">"Species"</span>,</span></span>
+<span class="r-in"><span>                legend <span class="op">=</span> <span class="cn">TRUE</span>, leg.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Species"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                lab.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>rotate <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="bb_biplot-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>

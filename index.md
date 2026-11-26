@@ -77,10 +77,11 @@ p <- prcomp(iris[-5], scale=TRUE)
 # Group
 gr <- as.factor(iris[,5])
 # Plot
-bb_biplot(p, scale=0, group=gr, circle.eq=TRUE, legend=TRUE, title.leg="Species", lab.args=list(rotate=TRUE))
+bb_biplot(p, scale=0, group=gr, circle.eq=TRUE, legend=TRUE, leg.args=list(title="Species"), lab.args=list(rotate=TRUE))
 ```
 
-![Better biplot example plot](better_biplot_example.svg)
+![Better biplot example
+plot](reference/figures/better_biplot_example.svg)
 
 Better biplot example plot
 
@@ -96,11 +97,12 @@ bb_biplot(
   circle.eq = TRUE,
   var.args = list(lab.offset = 1.08),
   lab.args = list(rotate = TRUE),
-  legend = TRUE, title.leg = "Species"
+  legend = TRUE, leg.args = list(title = "Species")
 )
 ```
 
-![Better biplot v2.0.0 showcase](better_biplot_showcase.svg)
+![Better biplot v2.0.0
+showcase](reference/figures/better_biplot_showcase.svg)
 
 Better biplot v2.0.0 showcase
 
@@ -355,7 +357,7 @@ of each group, and legend text is taken from the `group` arguments
 (i.e. the different factors). Legend titles are also generated
 automatically, although these are simply “Group” followed by the number
 (or `"Weight"` for `svyprcomp()` weights). You can specify your own
-titles for each group using the `title.leg` argument.
+titles for each group using `leg.args=list(title=...)`.
 
 By default, `legend=TRUE` or `legend="all"` displays legends for all
 supplied groups. You can also select specific groups to display by
@@ -368,15 +370,15 @@ with `group3="scaled"`). Examples:
 ``` r
 
 # Legends: 1 group
-bb_biplot(p, scale=0, group=gr, legend=TRUE, title.leg="Species")
+bb_biplot(p, scale=0, group=gr, legend=TRUE, leg.args=list(title="Species"))
 # 2 groups (all)
-bb_biplot(p, scale=0, group=gr, group2=gr2, legend="all", title.leg=c("Species", "second title"))
+bb_biplot(p, scale=0, group=gr, group2=gr2, legend="all", leg.args=list(title=c("Species", "second title")))
 # 3 groups (all)
-bb_biplot(p, scale=0, group=gr, group2=gr2, group3=gr3, legend=TRUE, title.leg=c("Species", "second title", "third"))
+bb_biplot(p, scale=0, group=gr, group2=gr2, group3=gr3, legend=TRUE, leg.args=list(title=c("Species", "second title", "third")))
 # Only show legend for group and group3
-bb_biplot(p, scale=0, group=gr, group2=gr2, group3=gr3, legend=c(1, 3), title.leg=c("Species", "Size"))
+bb_biplot(p, scale=0, group=gr, group2=gr2, group3=gr3, legend=c(1, 3), leg.args=list(title=c("Species", "Size")))
 # Only show legend for group3
-bb_biplot(p, scale=0, group=gr, group2=gr2, group3=gr3, legend=3, title.leg="Size")
+bb_biplot(p, scale=0, group=gr, group2=gr2, group3=gr3, legend=3, leg.args=list(title="Size"))
 ```
 
 To control the order of legend items (as well as colour, symbol, and
@@ -445,7 +447,7 @@ source("https://raw.githubusercontent.com/benbell95/supergrid/refs/heads/main/r/
 
 ### data generated in previous example...
 # Plot
-bb_biplot(p, scale=0, group=gr, circle.eq=TRUE, legend=TRUE, title.leg="Species", lab.args=list(rotate=TRUE), f1=supergrid)
+bb_biplot(p, scale=0, group=gr, circle.eq=TRUE, legend=TRUE, leg.args=list(title="Species"), lab.args=list(rotate=TRUE), f1=supergrid)
 ```
 
 You can also add other plot elements to the biplot (after using
@@ -484,7 +486,7 @@ You can also access the built-in documentation in R using
 values), browse the full walkthrough in
 [`vignette("betterbiplot")`](https://benbell95.github.io/better_biplot/articles/betterbiplot.md),
 and see [NEWS.md](https://benbell95.github.io/better_biplot/NEWS.md) for
-full v2.0.0 release notes.
+full release notes.
 
 ## Arguments
 
@@ -528,9 +530,8 @@ customise.
 | centroids | Draw group centroids when `group` is supplied (default = FALSE). Accepts `FALSE`, `TRUE` (markers + labels), `"points"`, or `"labels"`. |
 | spider | Logical. Draw segments connecting each observation to its `group` centroid (default = FALSE). |
 | ellipse.args | Named list of hull and ellipse styling options (also accepted via alias `chull.args`): `method` (`"cov"` or `"t"`, default `"cov"`), `level` (confidence level in `(0, 1)`, default `0.95`), `autolim` (default `TRUE`), `nofill` (default `FALSE`), `alpha` (fill opacity, default `0.25`), `border.alpha` (border/spider opacity, default `0.9`), `lwd` (default `2`). |
-| legend | Controls legend display (default = FALSE). Accepts FALSE (none), TRUE or “all” (all supplied groups), or integer values in 1:3 (e.g. 1, c(1, 3), 3) to show only selected groups. Only works when group is specified. |
-| title.leg | Titles for legend groups. Can match the number of shown legends positionally, or supply titles for all groups (default = “Group”, “Group 2”, “Group 3”). |
-| leg.args | Named list of legend styling options: `cex` (default `0.75`), `horiz` (default `FALSE`), `x` (optional x-coordinate), `y` (optional y-coordinate), `title` (optional title(s) if `title.leg` is omitted). |
+| legend | Controls legend display (default = FALSE). Accepts FALSE (none), TRUE or “all” (all supplied groups), or integer values in 1:3 (e.g. 1, c(1, 3), 3) to show only selected groups. Requires `group` (except when using `group3 = "scaled"` with [`survey::svyprcomp()`](https://rdrr.io/pkg/survey/man/svyprcomp.html)). |
+| leg.args | Named list of legend styling options: `cex` (default `0.75`), `horiz` (default `FALSE`), `x` (optional x-coordinate), `y` (optional y-coordinate), `title` (optional title(s) matching shown legends positionally or indexed by group number; default `"Group"`, `"Group 2"`, `"Group 3"`, or `"Weight"` for `svyprcomp()` weights). |
 | f1 | Run a custom zero-argument function before the main plot (e.g. `f1 = function() supergrid(col = "grey")`). |
 | f2 | Run a custom zero-argument function before the variables plot. |
 | … | Additional arguments passed to [`plot()`](https://rdrr.io/r/graphics/plot.default.html) (main plot only), `chull.args`, or deprecated v1.x arguments. |
@@ -565,7 +566,7 @@ bb_biplot(
   lab.args = list(rotate = TRUE),
   circle.eq = TRUE, var.args = list(which = "circle.eq", col = "navy", expand = 1.2),
   ellipse = TRUE, ellipse.args = list(level = 0.95, nofill = TRUE),
-  legend = TRUE, title.leg = "Species", leg.args = list(horiz = TRUE, x = -3.2)
+  legend = TRUE, leg.args = list(title = "Species", horiz = TRUE, x = -3.2)
 )
 ```
 
@@ -578,7 +579,7 @@ bb_biplot(
 | `lwd.v`, `col.v`, `col.labv`, `cex.labv`, `font.labv`, `axes.v` | `var.args = list(lwd = ..., col = ..., col.lab = ..., cex.lab = ..., font.lab = ..., axes = ...)` |
 | `autolim`, `nofill`, `lwd.e` | `ellipse.args = list(...)` (or `chull.args = list(...)`) |
 | `angle`, `se` | Removed (ellipses now use `ellipse.args = list(method = "cov", level = 0.95)`) |
-| `cex.leg`, `horiz`, `lpx`, `lpy` | `leg.args = list(cex = ..., horiz = ..., x = ..., y = ...)` |
+| `title.leg`, `cex.leg`, `horiz`, `lpx`, `lpy` | `leg.args = list(title = ..., cex = ..., horiz = ..., x = ..., y = ...)` |
 | `f1.a`, `f2.a` | Wrapper function, e.g. `f1 = function() fn(...)` |
 
 ## AI Disclosure

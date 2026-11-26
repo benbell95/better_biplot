@@ -62,7 +62,7 @@ bb_biplot(
   p, scale = 0,
   group = gr_ord, group2 = gr2, group3 = gr3,
   col = "Okabe-Ito", alpha = 0.75,
-  legend = TRUE, title.leg = c("Species", "Treatment", "Size")
+  legend = TRUE, leg.args = list(title = c("Species", "Treatment", "Size"))
 )
 ```
 
@@ -113,8 +113,8 @@ gr3_many <- factor(rep(c(0.5, 1, 2, 2.5, 4, 6, 7), length.out = nrow(iris)))
 bb_biplot(
   p, scale = 0,
   group = gr, group2 = gr2, group3 = gr3_many,
-  legend = c(1, 3), title.leg = c("Species", "Weight"),
-  leg.args = list(horiz = TRUE, x = -3.2)
+  legend = c(1, 3),
+  leg.args = list(title = c("Species", "Weight"), horiz = TRUE, x = -3.2)
 )
 ```
 
@@ -137,7 +137,7 @@ bb_biplot(
   var.args = list(which = "circle.eq", lab.offset = 1.1, col = "firebrick"),
   labd = ifelse(seq_len(nrow(iris)) %% 10 == 0, rownames(iris), NA),
   lab.args = list(pos = "auto", cex = 0.7),
-  legend = TRUE, title.leg = "Species"
+  legend = TRUE, leg.args = list(title = "Species")
 )
 ```
 
@@ -155,7 +155,7 @@ r <- vegan::rda(iris[-5], scale = TRUE)
 bb_biplot(
   r, scale = 0, group = gr, col = "Okabe-Ito",
   ellipse = TRUE, circle.eq = TRUE,
-  legend = TRUE, title.leg = "Species"
+  legend = TRUE, leg.args = list(title = "Species")
 )
 ```
 
@@ -181,7 +181,7 @@ bb_biplot(
   sp, scale = 0,
   group = factor(env$apiclus2$stype),
   group3 = "scaled",
-  legend = TRUE, title.leg = c("School Type", "Survey Weight")
+  legend = TRUE, leg.args = list(title = c("School Type", "Survey Weight"))
 )
 ```
 
@@ -199,7 +199,7 @@ annotations (resetting `par(usr = c(bp$lim, bp$lim))` when
 bp <- bb_biplot(
   p, scale = 0, group = gr, col = "Okabe-Ito",
   f1 = function() graphics::grid(col = "grey88", lty = "dotted"),
-  legend = TRUE, title.leg = "Species"
+  legend = TRUE, leg.args = list(title = "Species")
 )
 par(usr = c(bp$lim, bp$lim))
 text(bp$centroids, labels = rownames(bp$centroids), font = 2)

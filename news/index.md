@@ -1,5 +1,53 @@
 # Changelog
 
+## betterbiplot 2.0.1
+
+### Changes & Improvements
+
+- Moved `title.leg` into `leg.args = list(title = ...)` (top-level
+  `title.leg` remains accepted with a deprecation warning).
+- Reorganised `R/` source files (`R/bb_biplot.R`, `R/methods.R`,
+  `R/utils.R`) and simplified S3 methods to use `pc` directly.
+- Removed the `methods` import by replacing `hasArg()` with explicit
+  `!missing(...) && !is.null(...)` checks.
+- Updated
+  [`bb_biplot.principal()`](https://benbell95.github.io/better_biplot/reference/bb_biplot.md)
+  to use rotated variance proportions from
+  `Vaccounted["Proportion Var", ]` when available.
+- Updated GitHub Actions workflows to `actions/checkout@v6` (Node.js 24)
+  and moved README SVG figures into `man/figures/` so they display on
+  the `pkgdown` site.
+
+### Bug Fixes
+
+- **Varimax rotation consistency:** Fixed `varimax.rotate = TRUE` to
+  rotate both observation scores and variable loadings consistently
+  (before `scale`/`pc.biplot` scaling), preserving inner products and
+  updating axis `%` variance labels.
+- **`autolim` ellipse limit expansion:** Fixed the limit multiplier
+  (`ceiling((ecm / max(lim)) * 10) / 10`) so large ellipses (such as
+  small-sample Hotelling’s T-squared ellipses) are no longer clipped.
+- **Convex hulls and ellipses on `data.frame` and `NA` inputs:** Indexed
+  `x` directly by `as.integer(group)` and filtered non-finite
+  coordinates, fixing silent failures when `x` is a `data.frame` and
+  crashes when `x` or `group` contains `NA`.
+- **`labd` with `pos = "auto"` and `NA` coordinates:** Added a fallback
+  for `NA` positions so [`text()`](https://rdrr.io/r/graphics/text.html)
+  no longer throws `invalid 'pos' value`.
+- **Ungrouped `group_cols` and vector `col` with `pch = 21`:** Returned
+  the fill colour (`colf`) rather than `"black"` in `res$group_cols`
+  when ungrouped, and applied black outlines consistently across all
+  observations when passing per-observation `col` with `pch = 21:25`.
+- **Zero-variance PCs:** Guarded against division by zero in
+  `.bb_scale_pca()`,
+  [`bb_biplot.PCA()`](https://benbell95.github.io/better_biplot/reference/bb_biplot.md),
+  [`bb_biplot.pca()`](https://benbell95.github.io/better_biplot/reference/bb_biplot.md),
+  and `pvar` so collinear/zero-variance components no longer produce
+  `NaN`/`Inf`.
+- **Input validation & explicit `NULL` arguments:** Validated `pc` as
+  positive integers and handled explicit `NULL` optional arguments
+  cleanly as omitted.
+
 ## betterbiplot 2.0.0
 
 ### Package Conversion
